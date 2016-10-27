@@ -43,5 +43,13 @@ static inline int ptdump_debugfs_register(struct ptdump_info *info,
 	return 0;
 }
 #endif
+void ptdump_check_wx(void);
 #endif /* CONFIG_ARM64_PTDUMP_CORE */
+
+#ifdef CONFIG_DEBUG_WX
+#define debug_checkwx()	ptdump_check_wx()
+#else
+#define debug_checkwx()	do { } while (0)
+#endif
+
 #endif /* __ASM_PTDUMP_H */
