@@ -1497,7 +1497,7 @@ static void collapse_shmem(struct mm_struct *mm,
 		list_add_tail(&page->lru, &pagelist);
 
 		/* Finally, replace with the new page. */
-		radix_tree_replace_slot(slot,
+		radix_tree_replace_slot(&mapping->page_tree, slot,
 				new_page + (index % HPAGE_PMD_NR));
 
 		slot = radix_tree_iter_next(&iter);
@@ -1611,7 +1611,8 @@ tree_unlocked:
 			/* Unfreeze the page. */
 			list_del(&page->lru);
 			page_ref_unfreeze(page, 2);
-			radix_tree_replace_slot(slot, page);
+			radix_tree_replace_slot(&mapping->page_tree,
+						slot, page);
 			spin_unlock_irq(&mapping->tree_lock);
 			unlock_page(page);
 			putback_lru_page(page);
