@@ -50,6 +50,7 @@
 #include <linux/scatterlist.h>
 #include <crypto/scatterwalk.h>
 #include <linux/slab.h>
+#include <linux/compiler.h>
 
 struct crypto_cts_ctx {
 	struct crypto_skcipher *child;
@@ -104,7 +105,7 @@ static int cts_cbc_encrypt(struct skcipher_request *req)
 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
 	struct skcipher_request *subreq = &rctx->subreq;
 	int bsize = crypto_skcipher_blocksize(tfm);
-	u8 d[MAX_CIPHER_BLOCKSIZE * 2] __attribute__ ((aligned(__alignof__(u32))));
+	u8 d[MAX_CIPHER_BLOCKSIZE * 2] __aligned(__alignof__(u32));
 	struct scatterlist *sg;
 	unsigned int offset;
 	int lastn;
@@ -184,7 +185,7 @@ static int cts_cbc_decrypt(struct skcipher_request *req)
 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
 	struct skcipher_request *subreq = &rctx->subreq;
 	int bsize = crypto_skcipher_blocksize(tfm);
-	u8 d[MAX_CIPHER_BLOCKSIZE * 2] __attribute__ ((aligned(__alignof__(u32))));
+	u8 d[MAX_CIPHER_BLOCKSIZE * 2] __aligned(__alignof__(u32));
 	struct scatterlist *sg;
 	unsigned int offset;
 	u8 *space;

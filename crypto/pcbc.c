@@ -22,6 +22,7 @@
 #include <linux/module.h>
 #include <linux/scatterlist.h>
 #include <linux/slab.h>
+#include <linux/compiler.h>
 
 struct crypto_pcbc_ctx {
 	struct crypto_cipher *child;
@@ -154,7 +155,7 @@ static int crypto_pcbc_decrypt_inplace(struct blkcipher_desc *desc,
 	unsigned int nbytes = walk->nbytes;
 	u8 *src = walk->src.virt.addr;
 	u8 * const iv = walk->iv;
-	u8 tmpbuf[MAX_CIPHER_BLOCKSIZE] __attribute__ ((aligned(__alignof__(u32))));
+	u8 tmpbuf[MAX_CIPHER_BLOCKSIZE] __aligned(__alignof__(u32));
 
 	do {
 		memcpy(tmpbuf, src, bsize);
