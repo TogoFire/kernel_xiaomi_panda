@@ -16,6 +16,7 @@
 #include <asm/uaccess.h>
 #include <asm/setup.h>
 #include <asm/sections.h>
+#include <linux/kprobes.h>
 
 
 int patch_instruction(unsigned int *addr, unsigned int instr)
