@@ -2147,7 +2147,7 @@ recalibrate:
 	} else {
 		rc = wait_for_completion_timeout(
 					&vadc->adc->adc_rslt_completion,
-					QPNP_ADC_COMPLETION_TIMEOUT);
+					msecs_to_jiffies(QPNP_ADC_COMPLETION_TIMEOUT));
 		if (!rc) {
 			rc = qpnp_vadc_read_reg(vadc, QPNP_VADC_STATUS1,
 							&status1, 1);
