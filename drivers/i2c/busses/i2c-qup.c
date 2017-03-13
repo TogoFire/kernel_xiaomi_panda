@@ -334,7 +334,7 @@ static int qup_i2c_wait_ready(struct qup_i2c_dev *qup, int op, bool val,
 			}
 		}
 
-		if (time_after(jiffies, timeout)) {
+		if (time_after(jiffies, msecs_to_jiffies(timeout))) {
 			ret = -ETIMEDOUT;
 			goto done;
 		}
