@@ -4990,7 +4990,7 @@ static int ipa2_generate_tag_process(void)
 {
 	int res;
 
-	res = ipa_tag_process(NULL, 0, HZ);
+	res = ipa_tag_process(NULL, 0, IPA_TIMEOUT(1));
 	if (res)
 		IPAERR("TAG process failed\n");
 
