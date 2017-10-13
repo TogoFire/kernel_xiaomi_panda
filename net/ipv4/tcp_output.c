@@ -42,6 +42,8 @@
 #include <linux/gfp.h>
 #include <linux/module.h>
 
+#include <trace/events/tcp.h>
+
 /* People can turn this off for buggy TCP's found in printers etc. */
 int sysctl_tcp_retrans_collapse __read_mostly = 1;
 
@@ -2814,6 +2816,7 @@ int __tcp_retransmit_skb(struct sock *sk, struct sk_buff *skb, int segs)
 		if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_SYN)
 			__NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPSYNRETRANS);
 		tp->total_retrans += segs;
+		trace_tcp_retransmit_skb(sk, skb);
 	}
 	return err;
 }

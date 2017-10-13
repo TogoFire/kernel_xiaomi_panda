@@ -31,6 +31,7 @@
 #include <trace/events/napi.h>
 #include <trace/events/sock.h>
 #include <trace/events/udp.h>
+#include <trace/events/tcp.h>
 #include <trace/events/fib.h>
 #if IS_ENABLED(CONFIG_IPV6)
 #include <trace/events/fib6.h>
