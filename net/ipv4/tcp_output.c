@@ -3078,6 +3078,11 @@ void tcp_send_active_reset(struct sock *sk, gfp_t priority)
 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPABORTFAILED);
 
 	TCP_INC_STATS(sock_net(sk), TCP_MIB_OUTRSTS);
+
+	/* skb of trace_tcp_send_reset() keeps the skb that caused RST,
+	 * skb here is different to the troublesome skb, so use NULL
+	 */
+	trace_tcp_send_reset(sk, NULL);
 }
 
 /* Send a crossed SYN-ACK during socket establishment.
