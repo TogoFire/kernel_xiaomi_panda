@@ -121,6 +121,8 @@
 #endif
 #include <net/l3mdev.h>
 
+#include <trace/events/sock.h>
+
 #ifdef CONFIG_ANDROID_PARANOID_NETWORK
 #include <linux/android_aid.h>
 
@@ -1221,6 +1223,19 @@ int inet_sk_rebuild_header(struct sock *sk)
 	return err;
 }
 EXPORT_SYMBOL(inet_sk_rebuild_header);
+
+void inet_sk_set_state(struct sock *sk, int state)
+{
+	trace_inet_sock_set_state(sk, sk->sk_state, state);
+	sk->sk_state = state;
+}
+EXPORT_SYMBOL(inet_sk_set_state);
+
+void inet_sk_state_store(struct sock *sk, int newstate)
+{
+	trace_inet_sock_set_state(sk, sk->sk_state, newstate);
+	smp_store_release(&sk->sk_state, newstate);
+}
 
 struct sk_buff *inet_gso_segment(struct sk_buff *skb,
 				 netdev_features_t features)
