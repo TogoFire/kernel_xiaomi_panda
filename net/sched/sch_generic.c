@@ -321,11 +321,8 @@ static void dev_watchdog(unsigned long arg)
 			 *
 			 * https://bugzilla.kernel.org/show_bug.cgi?id=196399
 			 */
-			if (some_queue_timedout && 0) {
-				WARN_ONCE(1, KERN_INFO "NETDEV WATCHDOG: %s (%s): transmit queue %u timed out\n",
-				       dev->name, netdev_drivername(dev), i);
+			if (some_queue_timedout)
 				dev->netdev_ops->ndo_tx_timeout(dev);
-			}
 			if (!mod_timer(&dev->watchdog_timer,
 				       round_jiffies(jiffies +
 						     dev->watchdog_timeo)))
