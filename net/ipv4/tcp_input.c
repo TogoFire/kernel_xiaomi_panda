@@ -596,6 +596,9 @@ void tcp_rcv_space_adjust(struct sock *sk)
 
 	time = tcp_time_stamp - tp->rcvq_space.time;
 	if (time < (tp->rcv_rtt_est.rtt >> 3) || tp->rcv_rtt_est.rtt == 0)
+
+	trace_tcp_rcv_space_adjust(sk);
+
 		return;
 
 	/* Number of bytes copied to user in last RTT */
