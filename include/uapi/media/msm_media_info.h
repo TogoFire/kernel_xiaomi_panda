@@ -896,7 +896,7 @@ static inline unsigned int VENUS_Y_STRIDE(int color_fmt, int width)
 		stride = MSM_MEDIA_ALIGN(width * 2, alignment);
 		break;
 	case COLOR_FMT_P010:
-		alignment = 128;
+		alignment = 256;
 		stride = MSM_MEDIA_ALIGN(width*2, alignment);
 		break;
 	default:
@@ -942,7 +942,7 @@ static inline unsigned int VENUS_UV_STRIDE(int color_fmt, int width)
 		stride = MSM_MEDIA_ALIGN(width * 2, alignment);
 		break;
 	case COLOR_FMT_P010:
-		alignment = 128;
+		alignment = 256;
 		stride = MSM_MEDIA_ALIGN(width*2, alignment);
 		break;
 	default:
