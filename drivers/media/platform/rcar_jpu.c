@@ -1499,19 +1499,9 @@ static int jpu_job_ready(void *priv)
 	return 1;
 }
 
-static void jpu_job_abort(void *priv)
-{
-	struct jpu_ctx *ctx = priv;
-
-	if (!wait_event_timeout(ctx->jpu->irq_queue, !ctx->jpu->curr,
-				msecs_to_jiffies(JPU_JOB_TIMEOUT)))
-		jpu_cleanup(ctx, true);
-}
-
 static struct v4l2_m2m_ops jpu_m2m_ops = {
 	.device_run	= jpu_device_run,
 	.job_ready	= jpu_job_ready,
-	.job_abort	= jpu_job_abort,
 };
 
 /*

@@ -484,19 +484,6 @@ static int vidioc_s_crop(struct file *file, void *prv, const struct v4l2_crop *c
 	return 0;
 }
 
-static void job_abort(void *prv)
-{
-	struct g2d_ctx *ctx = prv;
-	struct g2d_dev *dev = ctx->dev;
-
-	if (dev->curr == NULL) /* No job currently running */
-		return;
-
-	wait_event_timeout(dev->irq_queue,
-			   dev->curr == NULL,
-			   msecs_to_jiffies(G2D_TIMEOUT));
-}
-
 static void device_run(void *prv)
 {
 	struct g2d_ctx *ctx = prv;
@@ -616,7 +603,6 @@ static struct video_device g2d_videodev = {
 
 static struct v4l2_m2m_ops g2d_m2m_ops = {
 	.device_run	= device_run,
-	.job_abort	= job_abort,
 };
 
 static const struct of_device_id exynos_g2d_match[];
