@@ -256,7 +256,7 @@
 	} while (0)
 
 #define PCIE_INFO(dev, fmt, arg...) do {			 \
-	pr_info("%s: " fmt, __func__, arg);  \
+	pr_debug("%s: " fmt, __func__, arg);  \
 	} while (0)
 
 #define PCIE_ERR(dev, fmt, arg...) do {			 \
