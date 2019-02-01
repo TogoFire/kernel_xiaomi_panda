@@ -333,6 +333,9 @@ static int notrace ramoops_pstore_write_buf(enum pstore_type_id type,
 	persistent_ram_zap(prz);
 
 	hlen = ramoops_write_kmsg_hdr(prz, compressed);
+	if (!hlen)
+		return -ENOMEM;
+
 	if (size + hlen > prz->buffer_size)
 		size = prz->buffer_size - hlen;
 	persistent_ram_write(prz, buf, size);
