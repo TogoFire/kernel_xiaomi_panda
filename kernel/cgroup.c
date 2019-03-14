@@ -65,6 +65,7 @@
 #include <linux/psi.h>
 #include <linux/binfmts.h>
 #include <linux/cpu_input_boost.h>
+#include <linux/devfreq_boost.h>
 #include <net/sock.h>
 
 #define CREATE_TRACE_POINTS
@@ -2950,6 +2951,7 @@ static int cgroup_procs_write_permission(struct task_struct *task,
  * function to attach either it or all tasks in its threadgroup. Will lock
  * cgroup_mutex and threadgroup.
  */
+extern int kp_active_mode(void);
 static ssize_t __cgroup_procs_write(struct kernfs_open_file *of, char *buf,
 				    size_t nbytes, loff_t off, bool threadgroup)
 {
@@ -2958,6 +2960,7 @@ static ssize_t __cgroup_procs_write(struct kernfs_open_file *of, char *buf,
 	struct cgroup *cgrp;
 	pid_t pid;
 	int ssid, ret;
+	unsigned int period = 200;
 
 	if (kstrtoint(strstrip(buf), 0, &pid) || pid < 0)
 		return -EINVAL;
@@ -2995,15 +2998,29 @@ static ssize_t __cgroup_procs_write(struct kernfs_open_file *of, char *buf,
 	get_task_struct(tsk);
 	rcu_read_unlock();
 
+
+    switch (kp_active_mode()) {
+    case 0: /* Use balance mode's boost period */
+    case 2:
+            /* Boost for 50 ms when balance mode is active */
+            period = 300;
+            break;
+    case 3:
+            /* Boost for 100 ms when performance mode is active */
+            period = 500;
+            break;
+    }
+
 	ret = cgroup_procs_write_permission(tsk, cgrp, of);
 	if (!ret)
 		ret = cgroup_attach_task(cgrp, tsk, threadgroup);
 
 	/* This covers boosting for app launches and app transitions */
 	if (!ret && !threadgroup &&
-	    !strcmp(of->kn->parent->name, "top-app") &&
-	    task_is_zygote(tsk->parent))
-		cpu_input_boost_kick_max(256);
+			!strcmp(of->kn->parent->name, "top-app") &&
+			task_is_zygote(tsk->parent))
+	cpu_input_boost_kick_max(256);
+	devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, period);
 
 	put_task_struct(tsk);
 	goto out_unlock_threadgroup;
