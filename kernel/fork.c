@@ -25,7 +25,6 @@
 #include <linux/fdtable.h>
 #include <linux/iocontext.h>
 #include <linux/key.h>
-#include <linux/binfmts.h>
 #include <linux/mman.h>
 #include <linux/mmu_notifier.h>
 #include <linux/fs.h>
@@ -80,6 +79,9 @@
 #include <linux/sysctl.h>
 #include <linux/kcov.h>
 #include <linux/cpufreq_times.h>
+#include <linux/binfmts.h>
+#include <linux/cpu_input_boost.h>
+#include <linux/devfreq_boost.h>
 
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
@@ -2100,6 +2102,14 @@ long _do_fork(unsigned long clone_flags,
 	struct task_struct *p;
 	int trace = 0;
 	long nr;
+
+#ifdef CONFIG_CPU_INPUT_BOOST
+	/* Boost CPU to the max for 50 ms when userspace launches an app */
+	if (is_zygote_pid(current->pid) && cpu_input_boost_within_input(75)) {
+		cpu_input_boost_kick_max(100);
+		devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 100);
+	}
+#endif
 
 	/*
 	 * Determine whether and which event to report to ptracer.  When
