@@ -516,7 +516,7 @@ int fts_gesture_init(struct fts_ts_data *ts_data)
 
 	fts_create_gesture_sysfs(client);
 	fts_input_symlink(client);
-	fts_gesture_data.mode = 1;
+	fts_gesture_data.mode = DISABLE;
 
 	FTS_FUNC_EXIT();
 	return 0;
