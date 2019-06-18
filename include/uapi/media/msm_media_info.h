@@ -3,6 +3,11 @@
 
 #define UBWC_EXTRA_SIZE 16384 /* 16*1024 extra size */
 
+/* Width and Height should be multiple of 16 */
+#define INTERLACE_WIDTH_MAX 1920
+#define INTERLACE_HEIGHT_MAX 1920
+#define INTERLACE_MB_PER_FRAME_MAX ((1920*1088)/256)
+
 #ifndef MSM_MEDIA_ALIGN
 #define MSM_MEDIA_ALIGN(__sz, __align) (((__align) & ((__align) - 1)) ?\
 	((((__sz) + (__align) - 1) / (__align)) * (__align)) :\
@@ -1384,6 +1389,9 @@ static inline unsigned int VENUS_BUFFER_SIZE(
 		size = MSM_MEDIA_ALIGN(size, 4096);
 		break;
 	case COLOR_FMT_NV12_UBWC:
+		if (width <= INTERLACE_WIDTH_MAX &&
+				height <= INTERLACE_HEIGHT_MAX &&
+				(height * width) / 256 <= INTERLACE_MB_PER_FRAME_MAX) {
 		y_sclines = VENUS_Y_SCANLINES(color_fmt, (height+1)>>1);
 		y_ubwc_plane = MSM_MEDIA_ALIGN(y_stride * y_sclines, 4096);
 		uv_sclines = VENUS_UV_SCANLINES(color_fmt, (height+1)>>1);
@@ -1403,6 +1411,8 @@ static inline unsigned int VENUS_BUFFER_SIZE(
 			uv_meta_plane)*2 +
 			MSM_MEDIA_MAX(extra_size + 8192, 48 * y_stride);
 		size = MSM_MEDIA_ALIGN(size, 4096);
+
+		}
 
 		/* Additional size to cover last row of non-aligned frame */
 		if (width >= 2400 && height >= 2400) {
