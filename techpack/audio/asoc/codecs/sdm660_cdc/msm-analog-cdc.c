@@ -60,15 +60,15 @@
 
 #define MICBIAS_DEFAULT_VAL 2200000
 #define MICBIAS_MIN_VAL 1600000
-#define MICBIAS_STEP_SIZE 50000
+#define MICBIAS_STEP_SIZE 15000
 
-#define DEFAULT_BOOST_VOLTAGE 5000
-#define MIN_BOOST_VOLTAGE 4000
+#define DEFAULT_BOOST_VOLTAGE 5400
+#define MIN_BOOST_VOLTAGE 4700
 #define MAX_BOOST_VOLTAGE 5550
-#define BOOST_VOLTAGE_STEP 50
+#define BOOST_VOLTAGE_STEP 15
 
-#define SDM660_CDC_MBHC_BTN_COARSE_ADJ  100 /* in mV */
-#define SDM660_CDC_MBHC_BTN_FINE_ADJ 12 /* in mV */
+#define SDM660_CDC_MBHC_BTN_COARSE_ADJ  50 /* in mV */
+#define SDM660_CDC_MBHC_BTN_FINE_ADJ 10 /* in mV */
 
 #define VOLTAGE_CONVERTER(value, min_value, step_size)\
 	((value - min_value)/step_size)
@@ -1682,7 +1682,7 @@ static int msm_anlg_cdc_hph_mode_get(struct snd_kcontrol *kcontrol,
 					snd_soc_codec_get_drvdata(codec);
 
 	if (sdm660_cdc->hph_mode == NORMAL_MODE) {
-		ucontrol->value.integer.value[0] = 0;
+		ucontrol->value.integer.value[0] = 1;
 	} else if (sdm660_cdc->hph_mode == HD2_MODE) {
 		ucontrol->value.integer.value[0] = 1;
 	} else  {
@@ -1707,14 +1707,14 @@ static int msm_anlg_cdc_hph_mode_set(struct snd_kcontrol *kcontrol,
 
 	switch (ucontrol->value.integer.value[0]) {
 	case 0:
-		sdm660_cdc->hph_mode = NORMAL_MODE;
+		sdm660_cdc->hph_mode = HD2_MODE;
 		break;
 	case 1:
 		if (get_codec_version(sdm660_cdc) >= DIANGU)
 			sdm660_cdc->hph_mode = HD2_MODE;
 		break;
 	default:
-		sdm660_cdc->hph_mode = NORMAL_MODE;
+		sdm660_cdc->hph_mode = HD2_MODE;
 		break;
 	}
 	dev_dbg(codec->dev, "%s: sdm660_cdc->hph_mode_set = %d\n",
@@ -3767,7 +3767,7 @@ static int msm_anlg_cdc_device_down(struct snd_soc_codec *codec)
 		}
 	}
 	msm_anlg_cdc_boost_off(codec);
-	sdm660_cdc_priv->hph_mode = NORMAL_MODE;
+	sdm660_cdc_priv->hph_mode = HD2_MODE;
 	/* Disable PA to avoid pop during codec bring up */
 	snd_soc_update_bits(codec, MSM89XX_PMIC_ANALOG_RX_HPH_CNP_EN,
 			0x30, 0x00);
@@ -4135,7 +4135,7 @@ static int msm_anlg_cdc_soc_probe(struct snd_soc_codec *codec)
 	 * it to BOOST_ALWAYS or BOOST_BYPASS based on solution chosen.
 	 */
 	sdm660_cdc->boost_option = BOOST_SWITCH;
-	sdm660_cdc->hph_mode = NORMAL_MODE;
+	sdm660_cdc->hph_mode = HD2_MODE;
 
 	msm_anlg_cdc_dt_parse_boost_info(codec);
 	msm_anlg_cdc_set_boost_v(codec);

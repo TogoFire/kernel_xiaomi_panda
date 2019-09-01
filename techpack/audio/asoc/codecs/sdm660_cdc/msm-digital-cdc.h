@@ -19,8 +19,8 @@
 #define NUM_DECIMATORS	5
 /* Codec supports 1 compander */
 enum {
-	COMPANDER_NONE = 0,
-	COMPANDER_1, /* HPHL/R */
+	COMPANDER_1 = 0, /* HPHL/R */
+	COMPANDER_NONE,
 	COMPANDER_MAX,
 };
 
