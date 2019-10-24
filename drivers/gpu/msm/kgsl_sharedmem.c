@@ -400,7 +400,7 @@ static int kgsl_allocate_secure(struct kgsl_device *device,
 	int ret;
 
 	if (MMU_FEATURE(&device->mmu, KGSL_MMU_HYP_SECURE_ALLOC))
-		ret = kgsl_sharedmem_page_alloc_user(memdesc, size);
+		ret = kgsl_sharedmem_page_alloc_user(device, memdesc, size);
 	else
 		ret = kgsl_cma_alloc_secure(device, memdesc, size);
 
@@ -420,7 +420,7 @@ int kgsl_allocate_user(struct kgsl_device *device,
 	else if (flags & KGSL_MEMFLAGS_SECURE)
 		ret = kgsl_allocate_secure(device, memdesc, size);
 	else
-		ret = kgsl_sharedmem_page_alloc_user(memdesc, size);
+		ret = kgsl_sharedmem_page_alloc_user(device, memdesc, size);
 
 	return ret;
 }
@@ -827,9 +827,8 @@ void kgsl_memdesc_init(struct kgsl_device *device,
 	spin_lock_init(&memdesc->lock);
 }
 
-int
-kgsl_sharedmem_page_alloc_user(struct kgsl_memdesc *memdesc,
-			uint64_t size)
+int kgsl_sharedmem_page_alloc_user(struct kgsl_device *device,
+				struct kgsl_memdesc *memdesc, uint64_t size)
 {
 	int ret = 0;
 	unsigned int j, page_size, len_alloc;
@@ -907,7 +906,7 @@ kgsl_sharedmem_page_alloc_user(struct kgsl_memdesc *memdesc,
 		page_count = kgsl_pool_alloc_page(&page_size,
 					memdesc->pages + pcount,
 					len_alloc - pcount,
-					&align);
+					&align, device->dev);
 		if (page_count <= 0) {
 			if (page_count == -EAGAIN)
 				continue;
@@ -1423,4 +1422,32 @@ void kgsl_sharedmem_set_noretry(bool val)
 bool kgsl_sharedmem_get_noretry(void)
 {
 	return sharedmem_noretry_flag;
+}
+
+static void kgsl_pool_sync_for_device(struct device *dev, struct page *page,
+		size_t size)
+{
+	struct scatterlist sg;
+
+	/* The caller may choose not to specify a device on purpose */
+	if (!dev)
+		return;
+
+	sg_init_table(&sg, 1);
+	sg_set_page(&sg, page, size, 0);
+	sg_dma_address(&sg) = page_to_phys(page);
+
+	dma_sync_sg_for_device(dev, &sg, 1, DMA_BIDIRECTIONAL);
+}
+
+void _kgsl_pool_zero_page(struct page *p, unsigned int order,
+					struct device *dev)
+{
+	int i;
+
+	for (i = 0; i < (1 << order); i++) {
+		struct page *page = nth_page(p, i);
+		clear_highpage(page);
+	}
+	kgsl_pool_sync_for_device(dev, p, PAGE_SIZE << order);
 }
