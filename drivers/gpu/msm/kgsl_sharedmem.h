@@ -73,8 +73,8 @@ int kgsl_allocate_user(struct kgsl_device *device,
 
 void kgsl_get_memory_usage(char *str, size_t len, uint64_t memflags);
 
-int kgsl_sharedmem_page_alloc_user(struct kgsl_memdesc *memdesc,
-				uint64_t size);
+int kgsl_sharedmem_page_alloc_user(struct kgsl_device *device,
+				struct kgsl_memdesc *memdesc, uint64_t size);
 
 void kgsl_free_secure_page(struct page *page);
 
@@ -298,7 +298,7 @@ static inline int kgsl_allocate_global(struct kgsl_device *device,
 		ret = kgsl_sharedmem_alloc_contig(device, memdesc,
 						(size_t) size);
 	else {
-		ret = kgsl_sharedmem_page_alloc_user(memdesc, (size_t) size);
+		ret = kgsl_sharedmem_page_alloc_user(device, memdesc, (size_t) size);
 		if (ret == 0) {
 			if (kgsl_memdesc_map(memdesc) == NULL) {
 				kgsl_sharedmem_free(memdesc);
