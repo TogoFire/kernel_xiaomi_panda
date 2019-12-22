@@ -3709,7 +3709,7 @@ static void msm_anlg_cdc_update_micbias_regulator(
 		}
 	}
 
-	dev_err(sdm660_cdc->dev, "Error: regulator not found:%s\n", name);
+	dev_dbg(sdm660_cdc->dev, "Error: regulator not found:%s\n", name);
 }
 
 static int msm_anlg_cdc_device_down(struct snd_soc_codec *codec)
