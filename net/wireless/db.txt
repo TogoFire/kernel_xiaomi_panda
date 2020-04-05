@@ -1208,12 +1208,18 @@ country UG: DFS-FCC
 	(5490 - 5730 @ 160), (24), DFS
         (5735 - 5835 @ 80), (30)
 
+# https://www.ecfr.gov/cgi-bin/text-idx?SID=eed706a2c49fd9271106c3228b0615f3&mc=true&node=pt47.1.15&rgn=div5
+# Title 47 Part 15 - Radio Frequency Devices, April 2, 2020
 country US: DFS-FCC
-	(2402 - 2472 @ 40), (30)
-	(5170 - 5250 @ 80), (24), AUTO-BW
+	(2400 - 2483.5 @ 40), (30)
+	(5150 - 5250 @ 80), (24), AUTO-BW
 	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
-	(5490 - 5730 @ 160), (24), DFS
-	(5735 - 5835 @ 80), (30)
+	# This range ends at 5725 MHz, but channel 144 extends to 5730 MHz.
+	# Since 5725 ~ 5730 MHz belongs to the next range which has looser
+	# requirements, we can extend the range by 5 MHz to make the kernel
+	# happy and be able to use channel 144.
+	(5470 - 5730 @ 160), (24), DFS
+	(5730 - 5835 @ 80), (30)
 	# 60g band
 	# reference: http://cfr.regstoday.com/47cfr15.aspx#47_CFR_15p255
 	# channels 1,2,3,4,5,6 EIRP=40dBm(43dBm peak)
