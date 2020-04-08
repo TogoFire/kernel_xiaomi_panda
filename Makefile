@@ -303,8 +303,14 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 	  else if [ -x /bin/bash ]; then echo /bin/bash; \
 	  else echo sh; fi ; fi)
 
+ifneq ($(LLVM),)
+HOSTCC       = clang
+HOSTCXX      = clang++
+else
 HOSTCC       = gcc
 HOSTCXX      = g++
+endif
+
 ifeq ($(CONFIG_ARCH_MSM8953), y)
 HOSTCFLAGS   := -Wall -Wmissing-prototypes -Wstrict-prototypes -O3 -fomit-frame-pointer -std=gnu89 -march=armv8-a+crypto+crc -mtune=cortex-a53 -mcpu=cortex-a53+crypto+crc
 HOSTCXXFLAGS = -O3 -march=armv8-a+crypto+crc -mtune=cortex-a53 -mcpu=cortex-a53+crypto+crc
@@ -350,12 +356,23 @@ scripts/Kbuild.include: ;
 include scripts/Kbuild.include
 
 # Make variables (CC, etc...)
+LDGOLD		= $(CROSS_COMPILE)ld.gold
+CPP		= $(CC) -E
+ifneq ($(LLVM),)
+CC		= clang
+LD		= ld.lld
+AR		= llvm-ar
+NM		= llvm-nm
+OBJCOPY	= llvm-objcopy
+OBJDUMP	= llvm-objdump
+READELF	= llvm-readelf
+OBJSIZE	= llvm-size
+STRIP		= llvm-strip
+else
 AS		= $(CROSS_COMPILE)as
 LD		= $(CROSS_COMPILE)ld
 CC		= $(CROSS_COMPILE)gcc
-LDGOLD		= $(CROSS_COMPILE)ld.gold
 LDLLD		= ld.lld
-CPP		= $(CC) -E
 AR		= $(CROSS_COMPILE)ar
 NM		= $(CROSS_COMPILE)nm
 LLVMNM		= llvm-nm
@@ -363,6 +380,7 @@ STRIP		= $(CROSS_COMPILE)strip
 OBJCOPY		= $(CROSS_COMPILE)objcopy
 LLVMOBJCOPY	= llvm-objcopy
 OBJDUMP		= $(CROSS_COMPILE)objdump
+endif
 AWK		= awk
 GENKSYMS	= scripts/genksyms/genksyms
 INSTALLKERNEL  := installkernel
