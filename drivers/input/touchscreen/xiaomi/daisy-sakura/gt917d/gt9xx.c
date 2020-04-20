@@ -875,6 +875,7 @@ static s8 gtp_enter_sleep(struct goodix_ts_data *ts)
 				  (u8)GTP_REG_COMMAND, 5 };
 
 	gtp_int_output(ts, 0);
+	gtp_reset_guitar(ts->client, 20);
 	usleep_range(5000, 6000);
 
 	while (retry++ < 5) {
