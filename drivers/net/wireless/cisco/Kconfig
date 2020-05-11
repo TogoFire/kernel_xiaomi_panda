@@ -1,6 +1,5 @@
 config WLAN_VENDOR_CISCO
 	bool "Cisco devices"
-	default y
 	---help---
 	  If you have a wireless card belonging to this class, say Y.
 

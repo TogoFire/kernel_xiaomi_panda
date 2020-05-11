@@ -3,7 +3,6 @@ config ATH_COMMON
 
 config WLAN_VENDOR_ATH
 	bool "Atheros/Qualcomm devices"
-	default y
 	---help---
 	  If you have a wireless card belonging to this class, say Y.
 

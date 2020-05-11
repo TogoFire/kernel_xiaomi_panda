@@ -1,7 +1,6 @@
 menuconfig RTL_CARDS
 	tristate "Realtek rtlwifi family of devices"
 	depends on MAC80211 && (PCI || USB)
-	default y
 	---help---
 	  This option will enable support for the Realtek mac80211-based
 	  wireless drivers. Drivers rtl8192ce, rtl8192cu, rtl8192se, rtl8192de,
@@ -130,7 +129,6 @@ config RTLWIFI_USB
 config RTLWIFI_DEBUG
 	bool "Debugging output for rtlwifi driver family"
 	depends on RTLWIFI
-	default y
 	---help---
 	To use the module option that sets the dynamic-debugging level for,
 	the front-end driver, this parameter must be "Y". For memory-limited
@@ -139,16 +137,13 @@ config RTLWIFI_DEBUG
 config RTL8192C_COMMON
 	tristate
 	depends on RTL8192CE || RTL8192CU
-	default y
 
 config RTL8723_COMMON
 	tristate
 	depends on RTL8723AE || RTL8723BE
-	default y
 
 config RTLBTCOEXIST
 	tristate
 	depends on RTL8723AE || RTL8723BE || RTL8821AE || RTL8192EE
-	default y
 
 endif

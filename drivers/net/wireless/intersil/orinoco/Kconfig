@@ -42,7 +42,6 @@ config HERMES_PRISM
 config HERMES_CACHE_FW_ON_INIT
 	bool "Cache Hermes firmware on driver initialisation"
 	depends on HERMES
-	default y
 	---help---
 	  Say Y to cache any firmware required by the Hermes drivers
 	  on startup.  The firmware will remain cached until the

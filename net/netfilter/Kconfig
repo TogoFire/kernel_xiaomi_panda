@@ -1244,7 +1244,6 @@ config NETFILTER_XT_MATCH_IPVS
 config NETFILTER_XT_MATCH_L2TP
 	tristate '"l2tp" match support'
 	depends on NETFILTER_ADVANCED
-	default L2TP
 	---help---
 	This option adds an "L2TP" match, which allows you to match against
 	L2TP protocol header fields.

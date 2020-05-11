@@ -15,7 +15,6 @@ config CARL9170
 
 config CARL9170_LEDS
 	bool "SoftLED Support"
-	default y
 	depends on CARL9170
 	depends on MAC80211_LEDS
 	help
@@ -35,7 +34,6 @@ config CARL9170_DEBUGFS
 config CARL9170_WPC
 	bool
 	depends on CARL9170 && (INPUT = y || INPUT = CARL9170)
-	default y
 
 config CARL9170_HWRNG
         bool "Random number generator"
