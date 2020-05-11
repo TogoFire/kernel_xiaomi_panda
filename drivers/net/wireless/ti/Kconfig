@@ -1,6 +1,5 @@
 config WLAN_VENDOR_TI
 	bool "Texas Instrument devices"
-	default y
 	---help---
 	  If you have a wireless card belonging to this class, say Y.
 
@@ -20,7 +19,6 @@ source "drivers/net/wireless/ti/wlcore/Kconfig"
 config WILINK_PLATFORM_DATA
 	bool "TI WiLink platform data"
 	depends on WLCORE_SDIO || WL1251_SDIO
-	default y
 	---help---
 	Small platform data bit needed to pass data to the sdio modules.
 

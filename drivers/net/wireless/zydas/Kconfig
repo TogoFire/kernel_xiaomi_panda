@@ -1,6 +1,5 @@
 config WLAN_VENDOR_ZYDAS
 	bool "ZyDAS devices"
-	default y
 	---help---
 	  If you have a wireless card belonging to this class, say Y.
 

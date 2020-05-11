@@ -62,14 +62,12 @@ config B43_PCI_AUTOSELECT
 	depends on B43 && SSB_PCIHOST_POSSIBLE
 	select SSB_PCIHOST
 	select SSB_B43_PCI_BRIDGE
-	default y
 
 # Auto-select SSB PCICORE driver, if possible
 config B43_PCICORE_AUTOSELECT
 	bool
 	depends on B43 && SSB_DRIVER_PCICORE_POSSIBLE
 	select SSB_DRIVER_PCICORE
-	default y
 
 config B43_SDIO
 	bool "Broadcom 43xx SDIO device support"
@@ -94,18 +92,15 @@ config B43_BCMA_PIO
 	bool
 	depends on B43 && B43_BCMA
 	select BCMA_BLOCKIO
-	default y
 
 config B43_PIO
 	bool
 	depends on B43 && B43_SSB
 	select SSB_BLOCKIO
-	default y
 
 config B43_PHY_G
 	bool "Support for G-PHY (802.11g) devices"
 	depends on B43 && B43_SSB
-	default y
 	---help---
 	  This PHY type can be found in the following chipsets:
 	  PCI: BCM4306, BCM4311, BCM4318
@@ -114,7 +109,6 @@ config B43_PHY_G
 config B43_PHY_N
 	bool "Support for N-PHY (the main 802.11n series) devices"
 	depends on B43
-	default y
 	---help---
 	  This PHY type can be found in the following chipsets:
 	  PCI: BCM4321, BCM4322,
@@ -125,7 +119,6 @@ config B43_PHY_N
 config B43_PHY_LP
 	bool "Support for LP-PHY (low-power 802.11g) devices"
 	depends on B43 && B43_SSB
-	default y
 	---help---
 	  The LP-PHY is a low-power PHY built into some notebooks
 	  and embedded devices. It supports 802.11a/b/g
@@ -134,7 +127,6 @@ config B43_PHY_LP
 config B43_PHY_HT
 	bool "Support for HT-PHY (high throughput 802.11n) devices"
 	depends on B43 && B43_BCMA
-	default y
 	---help---
 	  This PHY type with 3x3:3 MIMO can be found in the BCM4331 PCI chipset.
 
@@ -160,14 +152,12 @@ config B43_PHY_AC
 config B43_LEDS
 	bool
 	depends on B43 && MAC80211_LEDS && (LEDS_CLASS = y || LEDS_CLASS = B43)
-	default y
 
 # This config option automatically enables b43 HW-RNG support,
 # if the HW-RNG core is enabled.
 config B43_HWRNG
 	bool
 	depends on B43 && (HW_RANDOM = y || HW_RANDOM = B43)
-	default y
 
 config B43_DEBUG
 	bool "Broadcom 43xx debugging"

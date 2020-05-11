@@ -49,7 +49,6 @@ config IWLWIFI_LEDS
 	depends on LEDS_CLASS=y || LEDS_CLASS=IWLWIFI
 	select LEDS_TRIGGERS
 	select MAC80211_LEDS
-	default y
 
 config IWLDVM
 	tristate "Intel Wireless WiFi DVM Firmware support"
@@ -69,8 +68,6 @@ config IWLMVM
 # don't call it _MODULE -- will confuse Kconfig/fixdep/...
 config IWLWIFI_OPMODE_MODULAR
 	bool
-	default y if IWLDVM=m
-	default y if IWLMVM=m
 
 comment "WARNING: iwlwifi is useless without IWLDVM or IWLMVM"
 	depends on IWLDVM=n && IWLMVM=n
@@ -137,7 +134,6 @@ config IWLWIFI_DEBUGFS
 config IWLWIFI_DEVICE_TRACING
 	bool "iwlwifi device access tracing"
 	depends on EVENT_TRACING
-	default y
 	help
 	  Say Y here to trace all commands, including TX frames and IO
 	  accesses, sent to the device. If you say yes, iwlwifi will

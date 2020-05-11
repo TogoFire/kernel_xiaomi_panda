@@ -3,7 +3,6 @@
 #
 menuconfig INPUT_MOUSE
 	bool "Mice"
-	default y
 	help
 	  Say Y here, and a list of supported mice will be displayed.
 	  This option doesn't affect the kernel.
@@ -14,7 +13,6 @@ if INPUT_MOUSE
 
 config MOUSE_PS2
 	tristate "PS/2 mouse"
-	default y
 	select SERIO
 	select SERIO_LIBPS2
 	select SERIO_I8042 if ARCH_MIGHT_HAVE_PC_SERIO
@@ -40,7 +38,6 @@ config MOUSE_PS2
 
 config MOUSE_PS2_ALPS
 	bool "ALPS PS/2 mouse protocol extension" if EXPERT
-	default y
 	depends on MOUSE_PS2
 	help
 	  Say Y here if you have an ALPS PS/2 touchpad connected to
@@ -50,7 +47,6 @@ config MOUSE_PS2_ALPS
 
 config MOUSE_PS2_BYD
 	bool "BYD PS/2 mouse protocol extension" if EXPERT
-	default y
 	depends on MOUSE_PS2
 	help
 	  Say Y here if you have a BYD PS/2 touchpad connected to
@@ -60,7 +56,6 @@ config MOUSE_PS2_BYD
 
 config MOUSE_PS2_LOGIPS2PP
 	bool "Logitech PS/2++ mouse protocol extension" if EXPERT
-	default y
 	depends on MOUSE_PS2
 	help
 	  Say Y here if you have a Logitech PS/2++ mouse connected to
@@ -70,7 +65,6 @@ config MOUSE_PS2_LOGIPS2PP
 
 config MOUSE_PS2_SYNAPTICS
 	bool "Synaptics PS/2 mouse protocol extension" if EXPERT
-	default y
 	depends on MOUSE_PS2
 	help
 	  Say Y here if you have a Synaptics PS/2 TouchPad connected to
@@ -80,7 +74,6 @@ config MOUSE_PS2_SYNAPTICS
 
 config MOUSE_PS2_CYPRESS
        bool "Cypress PS/2 mouse protocol extension" if EXPERT
-       default y
        depends on MOUSE_PS2
        help
          Say Y here if you have a Cypress PS/2 Trackpad connected to
@@ -90,7 +83,6 @@ config MOUSE_PS2_CYPRESS
 
 config MOUSE_PS2_LIFEBOOK
 	bool "Fujitsu Lifebook PS/2 mouse protocol extension" if EXPERT
-	default y
 	depends on MOUSE_PS2 && X86 && DMI
 	help
 	  Say Y here if you have a Fujitsu B-series Lifebook PS/2
@@ -100,7 +92,6 @@ config MOUSE_PS2_LIFEBOOK
 
 config MOUSE_PS2_TRACKPOINT
 	bool "IBM Trackpoint PS/2 mouse protocol extension" if EXPERT
-	default y
 	depends on MOUSE_PS2
 	help
 	  Say Y here if you have an IBM Trackpoint PS/2 mouse connected
@@ -151,7 +142,6 @@ config MOUSE_PS2_OLPC
 
 config MOUSE_PS2_FOCALTECH
 	bool "FocalTech PS/2 mouse protocol extension" if EXPERT
-	default y
 	depends on MOUSE_PS2
 	help
 	  Say Y here if you have a FocalTech PS/2 TouchPad connected to
@@ -255,7 +245,6 @@ config MOUSE_ELAN_I2C
 config MOUSE_ELAN_I2C_I2C
 	bool "Enable I2C support"
 	depends on MOUSE_ELAN_I2C
-	default y
 	help
 	   Say Y here if Elan Touchpad in your system is connected to
 	   a standard I2C controller.
