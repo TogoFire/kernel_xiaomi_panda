@@ -18,7 +18,6 @@ config WIL6210
 config WIL6210_ISR_COR
 	bool "Use Clear-On-Read mode for ISR registers for wil6210"
 	depends on WIL6210
-	default y
 	---help---
 	  ISR registers on wil6210 chip may operate in either
 	  COR (Clear-On-Read) or W1C (Write-1-to-Clear) mode.
@@ -34,7 +33,6 @@ config WIL6210_TRACING
 	bool "wil6210 tracing support"
 	depends on WIL6210
 	depends on EVENT_TRACING
-	default y
 	---help---
 	  Say Y here to enable tracepoints for the wil6210 driver
 	  using the kernel tracing infrastructure.  Select this
@@ -45,7 +43,6 @@ config WIL6210_TRACING
 config WIL6210_WRITE_IOCTL
 	bool "wil6210 write ioctl to the device"
 	depends on WIL6210
-	default y
 	---help---
 	  Say Y here to allow write-access from user-space to
 	  the device memory through ioctl. This is useful for
@@ -57,7 +54,6 @@ config WIL6210_PLATFORM_MSM
 	bool "wil6210 MSM platform specific support"
 	depends on WIL6210
 	depends on ARCH_QCOM
-	default y
 	---help---
 	  Say Y here to enable wil6210 driver support for MSM
 	  platform specific features
@@ -66,7 +62,6 @@ config WIL6210_DEBUGFS
 	bool "wil6210 debugfs support"
 	depends on WIL6210
 	depends on DEBUG_FS
-	default y
 	---help---
 	  Say Y here to enable wil6210 debugfs support, using the
 	  kernel debugfs infrastructure. Select this

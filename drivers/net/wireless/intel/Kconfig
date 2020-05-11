@@ -1,6 +1,5 @@
 config WLAN_VENDOR_INTEL
 	bool "Intel devices"
-	default y
 	---help---
 	  If you have a wireless card belonging to this class, say Y.
 

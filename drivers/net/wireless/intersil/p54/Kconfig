@@ -68,4 +68,3 @@ config P54_SPI_DEFAULT_EEPROM
 config P54_LEDS
 	bool
 	depends on P54_COMMON && MAC80211_LEDS && (LEDS_CLASS = y || LEDS_CLASS = P54_COMMON)
-	default y

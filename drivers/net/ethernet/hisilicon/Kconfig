@@ -4,7 +4,6 @@
 
 config NET_VENDOR_HISILICON
 	bool "Hisilicon devices"
-	default y
 	depends on (OF || ACPI) && HAS_DMA
 	depends on ARM || ARM64 || COMPILE_TEST
 	---help---
