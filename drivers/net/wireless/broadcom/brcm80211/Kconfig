@@ -39,7 +39,6 @@ config BRCMFMAC_SDIO
 	depends on BRCMFMAC
 	select BRCMFMAC_PROTO_BCDC
 	select FW_LOADER
-	default y
 	---help---
 	  This option enables the SDIO bus interface support for Broadcom
 	  IEEE802.11n embedded FullMAC WLAN driver. Say Y if you want to

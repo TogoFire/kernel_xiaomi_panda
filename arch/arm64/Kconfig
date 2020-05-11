@@ -304,7 +304,6 @@ menu "ARM errata workarounds via the alternatives framework"
 
 config ARM64_ERRATUM_826319
 	bool "Cortex-A53: 826319: System might deadlock if a write cannot complete until read data is accepted"
-	default y
 	help
 	  This option adds an alternative code sequence to work around ARM
 	  erratum 826319 on Cortex-A53 parts up to r0p2 with an AMBA 4 ACE or
@@ -325,7 +324,6 @@ config ARM64_ERRATUM_826319
 
 config ARM64_ERRATUM_827319
 	bool "Cortex-A53: 827319: Data cache clean instructions might cause overlapping transactions to the interconnect"
-	default y
 	help
 	  This option adds an alternative code sequence to work around ARM
 	  erratum 827319 on Cortex-A53 parts up to r0p2 with an AMBA 5 CHI
@@ -346,7 +344,6 @@ config ARM64_ERRATUM_827319
 
 config ARM64_ERRATUM_824069
 	bool "Cortex-A53: 824069: Cache line might not be marked as clean after a CleanShared snoop"
-	default y
 	help
 	  This option adds an alternative code sequence to work around ARM
 	  erratum 824069 on Cortex-A53 parts up to r0p2 when it is connected
@@ -368,7 +365,6 @@ config ARM64_ERRATUM_824069
 
 config ARM64_ERRATUM_819472
 	bool "Cortex-A53: 819472: Store exclusive instructions might cause data corruption"
-	default y
 	help
 	  This option adds an alternative code sequence to work around ARM
 	  erratum 819472 on Cortex-A53 parts up to r0p1 with an L2 cache
@@ -389,7 +385,6 @@ config ARM64_ERRATUM_819472
 
 config ARM64_ERRATUM_832075
 	bool "Cortex-A57: 832075: possible deadlock on mixing exclusive memory accesses with device loads"
-	default y
 	help
 	  This option adds an alternative code sequence to work around ARM
 	  erratum 832075 on Cortex-A57 parts up to r1p2.
@@ -408,7 +403,6 @@ config ARM64_ERRATUM_832075
 config ARM64_ERRATUM_834220
 	bool "Cortex-A57: 834220: Stage 2 translation fault might be incorrectly reported in presence of a Stage 1 fault"
 	depends on KVM
-	default y
 	help
 	  This option adds an alternative code sequence to work around ARM
 	  erratum 834220 on Cortex-A57 parts up to r1p2.
@@ -429,7 +423,6 @@ config ARM64_ERRATUM_834220
 config ARM64_ERRATUM_845719
 	bool "Cortex-A53: 845719: a load might read incorrect data"
 	depends on COMPAT
-	default y
 	help
 	  This option adds an alternative code sequence to work around ARM
 	  erratum 845719 on Cortex-A53 parts up to r0p4.
@@ -449,7 +442,6 @@ config ARM64_ERRATUM_845719
 
 config ARM64_ERRATUM_843419
 	bool "Cortex-A53: 843419: A load or store might access an incorrect address"
-	default y if !LTO_CLANG
 	select ARM64_MODULE_CMODEL_LARGE if MODULES
 	help
 	  This option links the kernel with '--fix-cortex-a53-843419' and
@@ -461,7 +453,6 @@ config ARM64_ERRATUM_843419
 
 config ARM64_ERRATUM_1024718
 	bool "Cortex-A55: 1024718: Update of DBM/AP bits without break before make might result in incorrect update"
-	default y
 	help
 	  This option adds work around for Arm Cortex-A55 Erratum 1024718.
 
@@ -505,7 +496,6 @@ config ARM64_ERRATUM_1742098
 
 config CAVIUM_ERRATUM_22375
 	bool "Cavium erratum 22375, 24313"
-	default y
 	help
 	  Enable workaround for erratum 22375, 24313.
 
@@ -523,7 +513,6 @@ config CAVIUM_ERRATUM_22375
 config CAVIUM_ERRATUM_23144
 	bool "Cavium erratum 23144: ITS SYNC hang on dual socket system"
 	depends on NUMA
-	default y
 	help
 	  ITS SYNC command hang for cross node io and collections/cpu mapping.
 
@@ -531,7 +520,6 @@ config CAVIUM_ERRATUM_23144
 
 config CAVIUM_ERRATUM_23154
 	bool "Cavium erratum 23154: Access to ICC_IAR1_EL1 is not sync'ed"
-	default y
 	help
 	  The gicv3 of ThunderX requires a modified version for
 	  reading the IAR status to ensure data synchronization
@@ -541,7 +529,6 @@ config CAVIUM_ERRATUM_23154
 
 config CAVIUM_ERRATUM_27456
 	bool "Cavium erratum 27456: Broadcast TLBI instructions may cause icache corruption"
-	default y
 	help
 	  On ThunderX T88 pass 1.x through 2.1 parts, broadcast TLBI
 	  instructions may cause the icache to become corrupted if it
@@ -552,7 +539,6 @@ config CAVIUM_ERRATUM_27456
 
 config QCOM_QDF2400_ERRATUM_0065
 	bool "QDF2400 E0065: Incorrect GITS_TYPER.ITT_Entry_size"
-	default y
 	help
 	  On Qualcomm Datacenter Technologies QDF2400 SoC, ITS hardware reports
 	  ITE size incorrectly. The GITS_TYPER.ITT_Entry_size field should have
@@ -874,7 +860,6 @@ config FORCE_MAX_ZONEORDER
 
 config UNMAP_KERNEL_AT_EL0
 	bool "Unmap kernel when running in userspace (aka \"KAISER\")" if EXPERT
-	default y
 	help
 	  Speculation attacks against some high-performance processors can
 	  be used to bypass MMU permission checks and leak kernel data to
@@ -914,7 +899,6 @@ config PSCI_BP_HARDENING
 
 config ARM64_SSBD
 	bool "Speculative Store Bypass Disable" if EXPERT
-	default y
 	help
 	  This enables mitigation of the bypassing of previous stores
 	  by speculative loads.
@@ -1204,7 +1188,6 @@ config EFI
 	select EFI_RUNTIME_WRAPPERS
 	select EFI_STUB
 	select EFI_ARMSTUB
-	default y
 	help
 	  This option provides support for runtime services provided
 	  by UEFI firmware (such as non-volatile variables, realtime

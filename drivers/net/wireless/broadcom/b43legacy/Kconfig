@@ -25,14 +25,12 @@ config B43LEGACY_PCI_AUTOSELECT
 	depends on B43LEGACY && SSB_PCIHOST_POSSIBLE
 	select SSB_PCIHOST
 	select SSB_B43_PCI_BRIDGE
-	default y
 
 # Auto-select SSB PCICORE driver, if possible
 config B43LEGACY_PCICORE_AUTOSELECT
 	bool
 	depends on B43LEGACY && SSB_DRIVER_PCICORE_POSSIBLE
 	select SSB_DRIVER_PCICORE
-	default y
 
 # LED support
 # This config option automatically enables b43legacy LEDS support,
@@ -40,19 +38,16 @@ config B43LEGACY_PCICORE_AUTOSELECT
 config B43LEGACY_LEDS
 	bool
 	depends on B43LEGACY && MAC80211_LEDS && (LEDS_CLASS = y || LEDS_CLASS = B43LEGACY)
-	default y
 
 # This config option automatically enables b43 HW-RNG support,
 # if the HW-RNG core is enabled.
 config B43LEGACY_HWRNG
 	bool
 	depends on B43LEGACY && (HW_RANDOM = y || HW_RANDOM = B43LEGACY)
-	default y
 
 config B43LEGACY_DEBUG
 	bool "Broadcom 43xx-legacy debugging"
 	depends on B43LEGACY
-	default y
 	---help---
 	  Say Y, because this information will help you get the driver running.
 	  This option generates a minimum of log output.
