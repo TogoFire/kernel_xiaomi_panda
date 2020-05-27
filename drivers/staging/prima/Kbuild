@@ -698,6 +698,7 @@ EXTRA_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
 # Silence Clang warning
 EXTRA_CFLAGS += $(call cc-disable-warning, enum-conversion)
 EXTRA_CFLAGS += $(call cc-option, -Wframe-larger-than=2048)
+EXTRA_CFLAGS += $(call cc-disable-warning, void-pointer-to-enum-cast)
 
 # Silence Unused Function And Missing Declaration Warnings After Major Removals
 EXTRA_CFLAGS += $(call cc-disable-warning, unused-function)
