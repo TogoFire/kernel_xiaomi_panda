@@ -282,6 +282,8 @@ struct sde_kms {
 	struct mutex vblank_ctl_global_lock;
 
 	bool first_kickoff;
+
+	struct pm_qos_request pm_qos_irq_req;
 };
 
 struct vsync_info {
