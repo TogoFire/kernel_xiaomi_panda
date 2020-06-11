@@ -30,6 +30,8 @@
 *.xz
 *.lz4
 *.lzo
+*.zst
+*.rej
 *.patch
 *.gcno
 *.ll
