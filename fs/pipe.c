@@ -331,7 +331,8 @@ pipe_read(struct kiocb *iocb, struct iov_iter *to)
 				curbuf = (curbuf + 1) & (pipe->buffers - 1);
 				pipe->curbuf = curbuf;
 				pipe->nrbufs = --bufs;
-				do_wakeup = 1;
+				/* Wakeup writer if buffer is half empty */
+				do_wakeup = bufs <= pipe->buffers / 2;
 			}
 			total_len -= chars;
 			if (!total_len)
@@ -562,7 +563,9 @@ pipe_poll(struct file *filp, poll_table *wait)
 	}
 
 	if (filp->f_mode & FMODE_WRITE) {
-		mask |= (nrbufs < pipe->buffers) ? POLLOUT | POLLWRNORM : 0;
+		/* Wakeup writer if buffer is half empty */
+		if (nrbufs <= pipe->buffers / 2)
+			mask |= POLLOUT | POLLWRNORM;
 		/*
 		 * Most Unices do not set POLLERR for FIFOs but on Linux they
 		 * behave exactly like pipes for poll().
