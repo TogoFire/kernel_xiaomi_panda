@@ -367,6 +367,7 @@ done:
 static noinline bool rwsem_spin_on_owner(struct rw_semaphore *sem)
 {
 	struct task_struct *owner = READ_ONCE(sem->owner);
+	int i = 0;
 
 	if (!owner || !rwsem_owner_is_writer(owner))
 		goto out;
@@ -392,7 +393,8 @@ static noinline bool rwsem_spin_on_owner(struct rw_semaphore *sem)
 		if (!on_cpu || need_resched())
 			return false;
 
-		cpu_relax_lowlatency();
+		if (i++ > 1000)
+			cpu_relax_lowlatency();
 	}
 out:
 	/*
