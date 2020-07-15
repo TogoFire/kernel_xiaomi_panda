@@ -34,7 +34,7 @@
 #include "wcd_cmi_api.h"
 #include "wcd9xxx-irq.h"
 
-#define CMI_CMD_TIMEOUT (10 * HZ)
+#define CMI_CMD_TIMEOUT (msecs_to_jiffies(10000))
 #define WCD_CPE_LSM_MAX_SESSIONS 2
 #define WCD_CPE_AFE_MAX_PORTS 4
 #define AFE_SVC_EXPLICIT_PORT_START 1
@@ -61,8 +61,8 @@
 }
 
 #define WCD_CPE_STATE_MAX_LEN 13
-#define CPE_OFFLINE_WAIT_TIMEOUT (2 * HZ)
-#define CPE_READY_WAIT_TIMEOUT (3 * HZ)
+#define CPE_OFFLINE_WAIT_TIMEOUT (msecs_to_jiffies(2000))
+#define CPE_READY_WAIT_TIMEOUT (msecs_to_jiffies(3000))
 #define WCD_CPE_SYSFS_DIR_MAX_LENGTH 32
 
 #define CPE_ERR_IRQ_CB(core) \
