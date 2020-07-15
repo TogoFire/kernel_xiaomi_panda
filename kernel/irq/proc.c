@@ -88,6 +88,29 @@ static int irq_affinity_list_proc_show(struct seq_file *m, void *v)
 	return show_irq_affinity(1, m, v);
 }
 
+/* 
+ * HW IRQ's to be ignored.
+ * Make sure you put appropriate IRQ's in this array.
+ */
+static const unsigned int ignore_hwirqs[] = {
+	20,
+	39,
+	65,    /* kgsl-3d0  */
+	104   /*  MDSS     */
+	/*200     qcom-smd-rpm */
+};
+
+static int check_ignore_irq(unsigned int irq)
+{
+	int i, ignore_irq_size = ARRAY_SIZE(ignore_hwirqs);
+	struct irq_desc *desc = irq_to_desc(irq);
+
+	for (i = 0; i < ignore_irq_size; i++)
+		if (desc->irq_data.hwirq == ignore_hwirqs[i])
+			return 1;
+
+	return 0;
+}
 
 static ssize_t write_irq_affinity(int type, struct file *file,
 		const char __user *buffer, size_t count, loff_t *pos)
@@ -95,6 +118,9 @@ static ssize_t write_irq_affinity(int type, struct file *file,
 	unsigned int irq = (int)(long)PDE_DATA(file_inode(file));
 	cpumask_var_t new_value;
 	int err;
+	
+	if (check_ignore_irq(irq))
+		return -EIO;
 
 	if (!irq_can_set_affinity_usr(irq) || no_irq_affinity)
 		return -EIO;
