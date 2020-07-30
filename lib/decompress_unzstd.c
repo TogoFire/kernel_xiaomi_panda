@@ -59,12 +59,14 @@
  * zstd's only source dependeny is xxhash, which has no source
  * dependencies.
  *
- * zstd and xxhash avoid declaring themselves as modules
- * when ZSTD_PREBOOT and XXH_PREBOOT are defined.
+ * When UNZSTD_PREBOOT is defined we declare __decompress(), which is
+ * used for kernel decompression, instead of unzstd().
+ *
+ * Define __DISABLE_EXPORTS in preboot environments to prevent symbols
+ * from xxhash and zstd from being exported by the EXPORT_SYMBOL macro.
  */
 #ifdef STATIC
-# define ZSTD_PREBOOT
-# define XXH_PREBOOT
+# define UNZSTD_PREBOOT
 # include "xxhash.c"
 # include "zstd/entropy_common.c"
 # include "zstd/fse_decompress.c"
@@ -79,10 +81,11 @@
 
 /* 128MB is the maximum window size supported by zstd. */
 #define ZSTD_WINDOWSIZE_MAX	(1 << ZSTD_WINDOWLOG_MAX)
-/* Size of the input and output buffers in multi-call mode.
+/*
+ * Size of the input and output buffers in multi-call mode.
  * Pick a larger size because it isn't used during kernel decompression,
  * since that is single pass, and we have to allocate a large buffer for
- * zstd's window anyways. The larger size speeds up initramfs decompression.
+ * zstd's window anyway. The larger size speeds up initramfs decompression.
  */
 #define ZSTD_IOBUF_SIZE		(1 << 17)
 
@@ -319,7 +322,7 @@ out:
 	return err;
 }
 
-#ifndef ZSTD_PREBOOT
+#ifndef UNZSTD_PREBOOT
 STATIC int INIT unzstd(unsigned char *buf, long len,
 		       long (*fill)(void*, unsigned long),
 		       long (*flush)(void*, unsigned long),
