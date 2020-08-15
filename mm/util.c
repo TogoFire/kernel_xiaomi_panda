@@ -505,6 +505,19 @@ int overcommit_ratio_handler(struct ctl_table *table, int write,
 	return ret;
 }
 
+int overcommit_policy_handler(struct ctl_table *table, int write, void *buffer,
+		size_t *lenp, loff_t *ppos)
+{
+	int ret;
+
+	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+	if (ret == 0 && write)
+		mm_compute_batch();
+
+	return ret;
+}
+
+
 int overcommit_kbytes_handler(struct ctl_table *table, int write,
 			     void __user *buffer, size_t *lenp,
 			     loff_t *ppos)
@@ -550,7 +563,8 @@ struct percpu_counter vm_committed_as ____cacheline_aligned_in_smp;
  */
 unsigned long vm_memory_committed(void)
 {
-	return percpu_counter_read_positive(&vm_committed_as);
+	s64 ret = __percpu_counter_sum(&vm_committed_as);
+	return ret < 0 ? 0 : ret;
 }
 EXPORT_SYMBOL_GPL(vm_memory_committed);
 
