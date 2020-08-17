@@ -151,7 +151,7 @@ void mm_compute_batch(void)
 	s32 nr = num_present_cpus();
 	s32 batch = max_t(s32, nr*2, 32);
 	
-	unsigned long ram_pages = totalram_pages();
+	unsigned long ram_pages = totalram_pages;
 
 	/*
 	 * For policy of OVERCOMMIT_NEVER, set batch size to 0.4%
