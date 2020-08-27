@@ -638,7 +638,6 @@ unsigned int v4l2_m2m_poll(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
 	struct video_device *vfd = video_devdata(file);
 	unsigned long req_events = poll_requested_events(wait);
 	struct vb2_queue *src_q, *dst_q;
-	struct vb2_buffer *src_vb = NULL, *dst_vb = NULL;
 	unsigned int rc = 0;
 	unsigned long flags;
 
@@ -672,36 +671,18 @@ unsigned int v4l2_m2m_poll(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
 		poll_wait(file, &src_q->done_wq, wait);
 	spin_unlock_irqrestore(&src_q->done_lock, flags);
 
-	spin_lock_irqsave(&dst_q->done_lock, flags);
-	if (list_empty(&dst_q->done_list)) {
-		/*
-		 * If the last buffer was dequeued from the capture queue,
-		 * return immediately. DQBUF will return -EPIPE.
-		 */
-		if (dst_q->last_buffer_dequeued) {
-			spin_unlock_irqrestore(&dst_q->done_lock, flags);
-			return rc | POLLIN | POLLRDNORM;
-		}
-
-		poll_wait(file, &dst_q->done_wq, wait);
-	}
-	spin_unlock_irqrestore(&dst_q->done_lock, flags);
-
 	spin_lock_irqsave(&src_q->done_lock, flags);
 	if (!list_empty(&src_q->done_list))
-		src_vb = list_first_entry(&src_q->done_list, struct vb2_buffer,
-						done_entry);
-	if (src_vb && (src_vb->state == VB2_BUF_STATE_DONE
-			|| src_vb->state == VB2_BUF_STATE_ERROR))
 		rc |= POLLOUT | POLLWRNORM;
 	spin_unlock_irqrestore(&src_q->done_lock, flags);
 
 	spin_lock_irqsave(&dst_q->done_lock, flags);
-	if (!list_empty(&dst_q->done_list))
-		dst_vb = list_first_entry(&dst_q->done_list, struct vb2_buffer,
-						done_entry);
-	if (dst_vb && (dst_vb->state == VB2_BUF_STATE_DONE
-			|| dst_vb->state == VB2_BUF_STATE_ERROR))
+
+	/*
+	 * If the last buffer was dequeued from the capture queue, signal
+	 * userspace. DQBUF(CAPTURE) will return -EPIPE.
+	 */
+	if (!list_empty(&dst_q->done_list) || dst_q->last_buffer_dequeued)
 		rc |= POLLIN | POLLRDNORM;
 	spin_unlock_irqrestore(&dst_q->done_lock, flags);
 
