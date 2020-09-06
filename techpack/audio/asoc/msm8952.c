@@ -316,7 +316,7 @@ done:
 int is_ext_spk_gpio_support(struct platform_device *pdev,
 			struct msm_asoc_mach_data *pdata)
 {
-	const char *spk_ext_pa = "qcom,msm-spk-ext-pa";
+	const char *spk_ext_pa = "qcom,spk_ext_pa";
 
 	pr_debug("%s:Enter\n", __func__);
 
@@ -3095,7 +3095,7 @@ static int msm8952_asoc_machine_probe(struct platform_device *pdev)
 	const char *wsa = "asoc-wsa-codec-names";
 	const char *type = NULL;
 	const char *ext_pa_str = NULL;
-	const char *spk_ext_pa = "qcom,msm-spk-ext-pa";
+	const char *spk_ext_pa = "qcom,spk_ext_pa";
 	int num_strings;
 	int id, i, val;
 	int ret = 0;
