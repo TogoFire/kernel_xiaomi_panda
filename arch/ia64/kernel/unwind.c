@@ -2242,7 +2242,20 @@ __initcall(create_gate_table);
 void __init
 unw_init (void)
 {
-	extern char __gp[];
+	#define __ia64_hidden __attribute__((visibility("hidden")))
+	/*
+	 * We use hidden symbols to generate more efficient code using
+	 * gp-relative addressing.
+	 */
+	extern char __gp[] __ia64_hidden;
+	/*
+	 * Unwind tables need to have proper alignment as init_unwind_table()
+	 * uses negative offsets against '__end_unwind'.
+	 * See https://gcc.gnu.org/PR84184
+	 */
+	extern const struct unw_table_entry __start_unwind[] __ia64_hidden;
+	extern const struct unw_table_entry __end_unwind[] __ia64_hidden;
+	#undef __ia64_hidden
 	extern void unw_hash_index_t_is_too_narrow (void);
 	long i, off;
 
