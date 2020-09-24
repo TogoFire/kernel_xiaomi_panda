@@ -1,6 +1,8 @@
 #ifndef __MEDIA_INFO_H__
 #define __MEDIA_INFO_H__
 
+#define UBWC_EXTRA_SIZE 4096
+
 #ifndef MSM_MEDIA_ALIGN
 #define MSM_MEDIA_ALIGN(__sz, __align) (((__align) & ((__align) - 1)) ?\
 	((((__sz) + (__align) - 1) / (__align)) * (__align)) :\
@@ -1408,6 +1410,7 @@ static inline unsigned int VENUS_BUFFER_SIZE(
 					w_alignment;
 			size = MSM_MEDIA_ALIGN(size, 4096);
 		}
+		size += UBWC_EXTRA_SIZE;
 		break;
 	case COLOR_FMT_NV12_BPP10_UBWC:
 		y_ubwc_plane = MSM_MEDIA_ALIGN(y_stride * y_sclines, 4096);
