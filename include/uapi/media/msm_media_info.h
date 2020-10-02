@@ -1,7 +1,7 @@
 #ifndef __MEDIA_INFO_H__
 #define __MEDIA_INFO_H__
 
-#define UBWC_EXTRA_SIZE 4096
+#define UBWC_EXTRA_SIZE 16384 /* 16*1024 extra size */
 
 #ifndef MSM_MEDIA_ALIGN
 #define MSM_MEDIA_ALIGN(__sz, __align) (((__align) & ((__align) - 1)) ?\
