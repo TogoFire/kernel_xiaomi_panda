@@ -835,11 +835,13 @@ void pm_get_active_wakeup_sources(char *pending_wakeup_source, size_t max)
 			last_active_ws = ws;
 		}
 	}
+	#ifdef CONFIG_DEBUG_FS
 	if (!active && last_active_ws) {
 		scnprintf(pending_wakeup_source, max,
 				"Last active Wakeup Source: %s",
 				last_active_ws->name);
 	}
+	#endif
 	srcu_read_unlock(&wakeup_srcu, srcuidx);
 }
 EXPORT_SYMBOL_GPL(pm_get_active_wakeup_sources);
