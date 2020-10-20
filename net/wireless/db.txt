@@ -957,8 +957,10 @@ country PH: DFS-FCC
 	(57000 - 66000 @ 2160), (40)
 
 country PK:
+	# https://fab.gov.pk/type-approval/
+	# https://pta.gov.pk/media/Pakistan_Table_of_Frequency_Allocations.pdf
 	(2402 - 2482 @ 40), (30)
-	(5735 - 5835 @ 80), (30)
+	(5725 - 5875 @ 80), (30)
 
 country PL: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
