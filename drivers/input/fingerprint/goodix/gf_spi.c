@@ -42,7 +42,6 @@
 #include <linux/fb.h>
 #include <linux/pm_qos.h>
 #include <linux/cpufreq.h>
-#include <linux/mdss_io_util.h>
 #include <linux/workqueue.h>
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
@@ -51,7 +50,6 @@
 #include "gf_spi.h"
 
 #define WAKELOCK_HOLD_TIME		1000	/* in ms */
-#define FP_UNLOCK_REJECTION_TIMEOUT	(WAKELOCK_HOLD_TIME - 500)
 #define GF_SPIDEV_NAME			"goodix,fingerprint"
 #define GF_DEV_NAME			"goodix_fp"
 #define GF_INPUT_NAME			"uinput-goodix"
