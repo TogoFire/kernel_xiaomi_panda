@@ -125,7 +125,6 @@ struct gf_dev {
 
     /* add by zhongshengbin for fingerprint D1S-634 2018-03-04 */
 	char wait_finger_down;
-	struct work_struct work;
 	bool proximity_state; /* 0:far 1:near */
 };
 

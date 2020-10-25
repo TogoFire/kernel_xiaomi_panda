@@ -35,17 +35,12 @@
 #include <linux/of_gpio.h>
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
-#include <linux/mdss_io_util.h>
 #include <linux/notifier.h>
 #include <linux/fb.h>
-#include <linux/mdss_io_util.h>
 
 /* modified by zhongshengbin for fingerprint D1S-634 begin 2018-03-04 */
 /* #define FPC_TTW_HOLD_TIME 1000 */
 #define FPC_TTW_HOLD_TIME		1000
-#define FP_UNLOCK_REJECTION_TIMEOUT	(FPC_TTW_HOLD_TIME - 500)
-/* modified by zhongshengbin for fingerprint D1S-634 end 2018-03-04 */
-
 #define RESET_LOW_SLEEP_MIN_US		5000
 #define RESET_LOW_SLEEP_MAX_US		(RESET_LOW_SLEEP_MIN_US + 100)
 #define RESET_HIGH_SLEEP1_MIN_US	100
@@ -86,7 +81,6 @@ struct fpc1020_data {
 	bool compatible_enabled;
 	/* modified by zhongshengbin for fingerprint D1S-634 begin 2018-03-04 */
 	struct notifier_block fb_notifier;
-	struct work_struct work;
 	int irq_gpio;
 	int rst_gpio;
 	bool prepared;
