@@ -22,9 +22,6 @@ CONFIG_PRIMA_WLAN_LFR := y
 # Flag to enable SAE
 CONFIG_WLAN_FEATURE_SAE := n
 
-# Flag to enable SW PTA
-CONFIG_WLAN_FEATURE_SW_PTA := y
-
 # Flag to enable OWE
 CONFIG_WLAN_AKM_SUITE_OWE := y
 
@@ -699,10 +696,6 @@ endif
 
 ifeq ($(CONFIG_WLAN_FEATURE_SAE),y)
 CDEFINES += -DWLAN_FEATURE_SAE
-endif
-
-ifeq ($(CONFIG_WLAN_FEATURE_SW_PTA),y)
-CDEFINES += -DFEATURE_WLAN_SW_PTA
 endif
 
 ifeq ($(CONFIG_WLAN_AKM_SUITE_OWE),y)
