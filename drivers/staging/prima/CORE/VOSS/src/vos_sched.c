@@ -61,6 +61,7 @@
 #include <linux/kthread.h>
 #include <linux/wcnss_wlan.h>
 #include "wlan_qct_pal_device.h"
+#include <disable.h>
 
 /*---------------------------------------------------------------------------
  * Preprocessor Definitions and Constants
@@ -193,7 +194,7 @@ vos_sched_open
   //Create the VOSS Main Controller thread
   pSchedContext->McThread = kthread_create(VosMCThread, pSchedContext,
                                            "VosMCThread");
-  if (IS_ERR(pSchedContext->McThread)) 
+  if (IS_ERR(pSchedContext->McThread))
   {
      VOS_TRACE(VOS_MODULE_ID_VOSS, VOS_TRACE_LEVEL_FATAL,
                "%s: Could not Create VOSS Main Thread Controller",__func__);
@@ -205,7 +206,7 @@ vos_sched_open
 
   pSchedContext->TxThread = kthread_create(VosTXThread, pSchedContext,
                                            "VosTXThread");
-  if (IS_ERR(pSchedContext->TxThread)) 
+  if (IS_ERR(pSchedContext->TxThread))
   {
      VOS_TRACE(VOS_MODULE_ID_VOSS, VOS_TRACE_LEVEL_FATAL,
                "%s: Could not Create VOSS TX Thread",__func__);
@@ -217,7 +218,7 @@ vos_sched_open
 
   pSchedContext->RxThread = kthread_create(VosRXThread, pSchedContext,
                                            "VosRXThread");
-  if (IS_ERR(pSchedContext->RxThread)) 
+  if (IS_ERR(pSchedContext->RxThread))
   {
 
      VOS_TRACE(VOS_MODULE_ID_VOSS, VOS_TRACE_LEVEL_FATAL,
@@ -311,13 +312,13 @@ VOS_STATUS vos_watchdog_open
 
   //Create the Watchdog thread
   pWdContext->WdThread = kthread_create(VosWDThread, pWdContext,"VosWDThread");
-  
-  if (IS_ERR(pWdContext->WdThread)) 
+
+  if (IS_ERR(pWdContext->WdThread))
   {
      VOS_TRACE(VOS_MODULE_ID_VOSS, VOS_TRACE_LEVEL_FATAL,
                "%s: Could not Create Watchdog thread",__func__);
      return VOS_STATUS_E_RESOURCES;
-  }  
+  }
   else
   {
      gpVosWatchdogContext = pWdContext;
@@ -453,7 +454,7 @@ VosMCThread
 
         pWdiMsg->callback(pWdiMsg);
 
-        /* 
+        /*
         ** return message to the Core
         */
         vos_core_return_msg(pSchedContext->pVContext, pMsgWrapper);
@@ -1019,7 +1020,7 @@ static int VosTXThread ( void * Arg )
   v_CONTEXT_t pVosContext        = NULL;
 
   set_user_nice(current, -1);
-  
+
 #ifdef WLAN_FEATURE_11AC_HIGH_TP
   set_wake_up_idle(true);
 #endif
@@ -1163,7 +1164,7 @@ static int VosTXThread ( void * Arg )
            VOS_BUG(0);
            break;
         }
-        
+
         pWdiMsg->callback(pWdiMsg);
 
         // return message to the Core
@@ -1213,7 +1214,7 @@ static int VosRXThread ( void * Arg )
   VOS_STATUS       vStatus       = VOS_STATUS_SUCCESS;
 
   set_user_nice(current, -1);
-  
+
 #ifdef WLAN_FEATURE_11AC_HIGH_TP
   set_wake_up_idle(true);
 #endif
@@ -1732,7 +1733,7 @@ void vos_sched_flush_mc_mqs ( pVosSchedContext pSchedContext )
   /* Flush the WDA Mq */
   while( NULL != (pMsgWrapper = vos_mq_get(&pSchedContext->wdaMcMq) ))
   {
-    if(pMsgWrapper->pVosMsg != NULL) 
+    if(pMsgWrapper->pVosMsg != NULL)
     {
         VOS_TRACE( VOS_MODULE_ID_VOSS, VOS_TRACE_LEVEL_INFO,
                    "%s: Freeing MC WDA MSG message type %d",
