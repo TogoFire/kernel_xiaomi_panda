@@ -57,8 +57,9 @@
 
 
 #include "vos_types.h"
-
 #define RSN_CAP_MFP_ENABLED     0x80
+
+#include <disable.h>
 
 /**
  * limConvertSupportedChannels
@@ -1116,10 +1117,10 @@ limProcessAssocReqFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo,
                               "length=%d from "),framelen);
         goto error;
     }
-    
+
     vos_mem_copy((tANI_U8 *) pAssocReq->assocReqFrame,
                   (tANI_U8 *) pBody, framelen);
-    pAssocReq->assocReqFrameLength = framelen;    
+    pAssocReq->assocReqFrameLength = framelen;
 
     if (cfgGetCapabilityInfo(pMac, &temp,psessionEntry) != eSIR_SUCCESS)
     {
@@ -1221,19 +1222,19 @@ limProcessAssocReqFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo,
     {
         limLog(pMac, LOGE, FL("SOFTAP was in 11G only mode, rejecting legacy "
                               "STA : "MAC_ADDRESS_STR),MAC_ADDR_ARRAY(pHdr->sa));
-        limSendAssocRspMgmtFrame( pMac, eSIR_MAC_CAPABILITIES_NOT_SUPPORTED_STATUS, 
+        limSendAssocRspMgmtFrame( pMac, eSIR_MAC_CAPABILITIES_NOT_SUPPORTED_STATUS,
                                   1, pHdr->sa, subType, 0, psessionEntry, NULL);
         goto error;
 
     }//end if phyMode == 11G_only
- 
-    if((psessionEntry->limSystemRole == eLIM_AP_ROLE) && 
-       (psessionEntry->dot11mode == WNI_CFG_DOT11_MODE_11N_ONLY) && 
+
+    if((psessionEntry->limSystemRole == eLIM_AP_ROLE) &&
+       (psessionEntry->dot11mode == WNI_CFG_DOT11_MODE_11N_ONLY) &&
        (!pAssocReq->HTCaps.present))
     {
         limLog(pMac, LOGE, FL("SOFTAP was in 11N only mode, rejecting legacy "
                               "STA : "MAC_ADDRESS_STR),MAC_ADDR_ARRAY(pHdr->sa));
-        limSendAssocRspMgmtFrame( pMac, eSIR_MAC_CAPABILITIES_NOT_SUPPORTED_STATUS, 
+        limSendAssocRspMgmtFrame( pMac, eSIR_MAC_CAPABILITIES_NOT_SUPPORTED_STATUS,
                                   1, pHdr->sa, subType, 0, psessionEntry, NULL);
         goto error;
     }//end if PhyMode == 11N_only
@@ -1244,7 +1245,7 @@ limProcessAssocReqFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo,
     {
         tSirRetStatus status = eSIR_SUCCESS;
 
-        /* If station is 11h capable, then it SHOULD send all mandatory 
+        /* If station is 11h capable, then it SHOULD send all mandatory
          * IEs in assoc request frame. Let us verify that
          */
         if (pAssocReq->capabilityInfo.spectrumMgt)
@@ -1353,8 +1354,8 @@ limProcessAssocReqFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo,
                            pHdr->sa,
                            subType, 0,psessionEntry, NULL);
 
-            
-#ifdef WLAN_DEBUG    
+
+#ifdef WLAN_DEBUG
             pMac->lim.gLim11bStaAssocRejectCount++;
 #endif
             goto error;
@@ -1427,10 +1428,10 @@ limProcessAssocReqFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo,
 
                 // Make sure the STA's caps are compatible with our own:
                 //11.15.2 Support of DSSS/CCK in 40 MHz
-                //the AP shall refuse association requests from an HT STA that has the DSSS/CCK 
+                //the AP shall refuse association requests from an HT STA that has the DSSS/CCK
                 //Mode in 40 MHz subfield set to 1;
 
-            //FIXME_BTAMP_AP : Need to be enabled 
+            //FIXME_BTAMP_AP : Need to be enabled
             /*
             if ( !pMac->lim.gHTDsssCckRate40MHzSupport && pAssocReq->HTCaps.dsssCckMode40MHz )
             {
@@ -1456,8 +1457,8 @@ limProcessAssocReqFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo,
     if( wpsIe == NULL )
     {
         /** check whether as RSN IE is present */
-        if(psessionEntry->limSystemRole == eLIM_AP_ROLE 
-            && psessionEntry->pLimStartBssReq->privacy 
+        if(psessionEntry->limSystemRole == eLIM_AP_ROLE
+            && psessionEntry->pLimStartBssReq->privacy
             && psessionEntry->pLimStartBssReq->rsnIE.length)
         {
             limLog(pMac, LOG1,
@@ -1467,10 +1468,10 @@ limProcessAssocReqFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo,
             {
                 if(pAssocReq->rsn.length)
                 {
-                    // Unpack the RSN IE 
+                    // Unpack the RSN IE
                     if (dot11fUnpackIeRSN(pMac,
-                                        &pAssocReq->rsn.info[0], 
-                                        pAssocReq->rsn.length, 
+                                        &pAssocReq->rsn.info[0],
+                                        pAssocReq->rsn.length,
                                         &Dot11fIERSN) != DOT11F_PARSE_SUCCESS)
                     {
                         limLog(pMac, LOGE,
@@ -1538,7 +1539,7 @@ limProcessAssocReqFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo,
                                    subType, 0,psessionEntry, NULL);
 
                     goto error;
-                    
+
                 }
 
                 akm_type = lim_translate_rsn_oui_to_akm_type(
@@ -1565,7 +1566,7 @@ limProcessAssocReqFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo,
             } /* end - if(pAssocReq->rsnPresent) */
             if((!pAssocReq->rsnPresent) && pAssocReq->wpaPresent)
             {
-                // Unpack the WPA IE 
+                // Unpack the WPA IE
                 if(pAssocReq->wpa.length)
                 {
                     if (dot11fUnpackIeWPA(pMac,
@@ -1618,7 +1619,7 @@ limProcessAssocReqFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo,
                                 Dot11fIEWPA.auth_suites[0]);
 
             } /* end - if(pAssocReq->wpaPresent) */
-        } /* end of if(psessionEntry->pLimStartBssReq->privacy 
+        } /* end of if(psessionEntry->pLimStartBssReq->privacy
             && psessionEntry->pLimStartBssReq->rsnIE->length) */
 
     } /* end of     if( ! pAssocReq->wscInfo.present ) */
@@ -1667,7 +1668,7 @@ error:
 
 /**---------------------------------------------------------------
 \fn     limSendMlmAssocInd
-\brief  This function sends either LIM_MLM_ASSOC_IND  
+\brief  This function sends either LIM_MLM_ASSOC_IND
 \       or LIM_MLM_REASSOC_IND to SME.
 \
 \param  pMac
@@ -1675,7 +1676,7 @@ error:
 \param  psessionEntry - PE session entry
 \return tSirRetStatus
 
- * ?????? How do I get 
+ * ?????? How do I get
  *  - subtype   =====> psessionEntry->parsedAssocReq.reassocRequest
  *  - aid       =====> pStaDs->assocId
  *  - pHdr->sa  =====> pStaDs->staAddr
@@ -1693,7 +1694,7 @@ tSirRetStatus limSendMlmAssocInd(tpAniSirGlobal pMac, tpDphHashNode pStaDs, tpPE
     tANI_U8                 subType;
     tANI_U8                 *wpsIe = NULL;
     tANI_U32                tmp;
-//    tANI_U16                statusCode;    
+//    tANI_U16                statusCode;
     tANI_U16                i, j=0;
 
     // Get a copy of the already parsed Assoc Request
@@ -1702,11 +1703,11 @@ tSirRetStatus limSendMlmAssocInd(tpAniSirGlobal pMac, tpDphHashNode pStaDs, tpPE
     // Get the phyMode
     limGetPhyMode(pMac, &phyMode, psessionEntry);
     // Extract pre-auth context for the peer BTAMP-STA, if any.
- 
+
     // Determiine if its Assoc or ReAssoc Request
     if (pAssocReq->reassocRequest == 1)
         subType = LIM_REASSOC;
-    else 
+    else
         subType = LIM_ASSOC;
 
     limLog(pMac, LOG1, FL("Sessionid %d ssid %s subtype %d Associd %d staAddr "
@@ -1728,14 +1729,14 @@ tSirRetStatus limSendMlmAssocInd(tpAniSirGlobal pMac, tpDphHashNode pStaDs, tpPE
 
         vos_mem_copy((tANI_U8 *)pMlmAssocInd->peerMacAddr,
                      (tANI_U8 *)pStaDs->staAddr, sizeof(tSirMacAddr));
- 
+
         pMlmAssocInd->aid    = pStaDs->assocId;
         vos_mem_copy((tANI_U8 *)&pMlmAssocInd->ssId,
                      (tANI_U8 *)&(pAssocReq->ssId), pAssocReq->ssId.length + 1);
         pMlmAssocInd->sessionId = psessionEntry->peSessionId;
         pMlmAssocInd->authType =  pStaDs->mlmStaContext.authType;
         pMlmAssocInd->akm_type =  pStaDs->mlmStaContext.akm_type;
- 
+
         pMlmAssocInd->capabilityInfo = pAssocReq->capabilityInfo;
 
         // Fill in RSN IE information
@@ -1829,7 +1830,7 @@ tSirRetStatus limSendMlmAssocInd(tpAniSirGlobal pMac, tpDphHashNode pStaDs, tpPE
         // Required for indicating the frames to upper layer
         pMlmAssocInd->assocReqLength = pAssocReq->assocReqFrameLength;
         pMlmAssocInd->assocReqPtr = pAssocReq->assocReqFrame;
-        
+
         pMlmAssocInd->beaconPtr = psessionEntry->beacon;
         pMlmAssocInd->beaconLength = psessionEntry->bcnLen;
 
@@ -1887,7 +1888,7 @@ tSirRetStatus limSendMlmAssocInd(tpAniSirGlobal pMac, tpDphHashNode pStaDs, tpPE
     }
     else
     {
-        // If its of Reassociation Request, then post LIM_MLM_REASSOC_IND 
+        // If its of Reassociation Request, then post LIM_MLM_REASSOC_IND
         temp  = sizeof(tLimMlmReassocInd);
 
         pMlmReassocInd = vos_mem_malloc(temp);
