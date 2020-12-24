@@ -27,9 +27,11 @@ Contents:
 2.3  Userspace
 2.4  Ondemand
 2.5  Conservative
+2.6  Schedutil
 
 3.   The Governor Interface in the CPUfreq Core
 
+4.   References
 
 
 1. What Is A CPUFreq Governor?
@@ -209,6 +211,28 @@ a decision on when to decrease the frequency while running in any
 speed. Load for frequency increase is still evaluated every
 sampling rate.
 
+2.6 Schedutil
+-------------
+
+The "schedutil" governor aims at better integration with the Linux
+kernel scheduler.  Load estimation is achieved through the scheduler's
+Per-Entity Load Tracking (PELT) mechanism, which also provides
+information about the recent load [1].  This governor currently does
+load based DVFS only for tasks managed by CFS. RT and DL scheduler tasks
+are always run at the highest frequency.  Unlike all the other
+governors, the code is located under the kernel/sched/ directory.
+
+Sysfs files:
+
+* rate_limit_us:
+
+  This contains a value in microseconds. The governor waits for
+  rate_limit_us time before reevaluating the load again, after it has
+  evaluated the load once.
+
+For an in-depth comparison with the other governors refer to [2].
+
+
 3. The Governor Interface in the CPUfreq Core
 =============================================
 
@@ -257,3 +281,9 @@ use __cpufreq_driver_target only in these cases. In all other cases
 (for example, when there's a "daemonized" function that wakes up
 every second), use cpufreq_driver_target to lock the cpufreq per-CPU
 lock before the command is passed to the cpufreq processor driver.
+
+4. References
+=============
+
+[1] Per-entity load tracking: https://lwn.net/Articles/531853/
+[2] Improvements in CPU frequency management: https://lwn.net/Articles/682391/
