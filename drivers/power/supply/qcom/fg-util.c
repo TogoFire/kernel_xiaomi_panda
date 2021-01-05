@@ -974,22 +974,22 @@ int fg_debugfs_create(struct fg_chip *chip)
 	chip->dfs_root = debugfs_create_dir("fg", NULL);
 	if (IS_ERR_OR_NULL(chip->dfs_root)) {
 		if (PTR_ERR(chip->dfs_root) == -ENODEV)
-			pr_err("debugfs is not enabled in the kernel\n");
+			pr_debug("debugfs is not enabled in the kernel\n");
 		else
-			pr_err("error creating fg dfs root rc=%ld\n",
+			pr_debug("error creating fg dfs root rc=%ld\n",
 			       (long)chip->dfs_root);
 		return -ENODEV;
 	}
 
 	rc = fg_sram_debugfs_create(chip);
 	if (rc < 0) {
-		pr_err("failed to create sram dfs rc=%d\n", rc);
+		pr_debug("failed to create sram dfs rc=%d\n", rc);
 		goto err_remove_fs;
 	}
 
 	if (!debugfs_create_file("alg_flags", 0400, chip->dfs_root, chip,
 				 &fg_alg_flags_fops)) {
-		pr_err("failed to create alg_flags file\n");
+		pr_debug("failed to create alg_flags file\n");
 		goto err_remove_fs;
 	}
 
