@@ -271,8 +271,6 @@
 #include <asm/irq_regs.h>
 #include <asm/io.h>
 
-#include "srandom_defs.h"
-
 #define CREATE_TRACE_POINTS
 #include <trace/events/random.h>
 
@@ -1828,7 +1826,6 @@ write_pool(struct entropy_store *r, const char __user *buffer, size_t count)
 	return 0;
 }
 
-/*
 #ifndef CONFIG_SRANDOM
 static ssize_t random_write(struct file *file, const char __user *buffer,
 			    size_t count, loff_t *ppos)
@@ -1842,7 +1839,7 @@ static ssize_t random_write(struct file *file, const char __user *buffer,
 	return (ssize_t)count;
 }
 #endif
-*/
+
 
 static long random_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 {
