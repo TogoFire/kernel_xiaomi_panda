@@ -124,3 +124,22 @@ kernel/configs/android-*.cfg
 #Ignoring Android.bp link file
 #
 Android.bp
+
+# Ignore stuff
+AnyKernel3/
+environment/
+out/
+clang-proton/
+clang-azure/
+clang-finix/
+clang-nfs/
+clang-prelude/
+clang-playground/
+clang-cosmic/
+clang-trb/
+clang-neutron/
+clang-llvm/
+clang-weebx/
+clang-greenforce/
+gcc/
+general/
