@@ -119,3 +119,24 @@ all.config
 
 # fetched Android config fragments
 kernel/configs/android-*.cfg
+
+# Ignore stuff
+AnyKernel3/
+changelog/
+clang-azure/
+clang-cosmic/
+clang-finix/
+clang-greenforce/
+clang-llvm/
+clang-neutron/
+clang-nfs/
+clang-playground/
+clang-prelude/
+clang-proton/
+clang-trb/
+clang-weebx/
+environment/
+gcc/
+gcc-eva/
+gcc64/
+out/
