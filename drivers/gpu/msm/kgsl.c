@@ -1099,6 +1099,8 @@ static void kgsl_process_private_close(struct kgsl_device_private *dev_priv,
 
 	debugfs_remove_recursive(private->debug_root);
 
+	debugfs_remove_recursive(private->debug_root);
+
 	/*
 	 * Unlock the mutex before releasing the memory - this prevents a
 	 * deadlock with the IOMMU mutex if a page fault occurs.
