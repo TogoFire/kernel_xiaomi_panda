@@ -1,3 +1,4 @@
+ifneq ($(CONFIG_NO_TECHPACK_AUDIO),y)
 # auto-detect subdirs
 ifeq ($(CONFIG_ARCH_MSM8953), y)
 include $(srctree)/techpack/audio/config/sdm450auto.conf
@@ -29,3 +30,7 @@ obj-y += ipc/
 obj-y += soc/
 
 subdir-ccflags-y := $(call cc-disable-warning, misleading-indentation)
+
+else # CONFIG_NO_TECHPACK_AUDIO
+obj-y += no_techpack_audio.o
+endif # CONFIG_NO_TECHPACK_AUDIO
