@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2018, 2020 The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012-2018, 2021 The Linux Foundation. All rights reserved.
  * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -505,6 +505,11 @@ static int msm_vidc_probe_vidc_device(struct platform_device *pdev)
 		return -ENOMEM;
 
 	core->platform_data = vidc_get_drv_data(&pdev->dev);
+	if(!core->platform_data) {
+		d_vpr_e("Failed to get platform data\n");
+		rc = -EINVAL;
+		goto err_core_init;
+	}
 	dev_set_drvdata(&pdev->dev, core);
 	if (core->platform_data) {
 		core->resources.enable_feature_config =
