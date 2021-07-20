@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2018, 2020 The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012-2021 The Linux Foundation. All rights reserved.
  * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -459,6 +459,7 @@ struct msm_vidc_inst {
 	struct tile_info tinfo;
 	struct msm_vidc_codec_data *codec_data;
 	struct hal_hdr10_pq_sei hdr10_sei_params;
+	bool operating_rate_set;
 };
 
 extern struct msm_vidc_drv *vidc_driver;
