@@ -60,7 +60,7 @@ static int cistpl_vers_1(struct mmc_card *card, struct sdio_func *func,
 
 	for (i = 0; i < nr_strings; i++) {
 		buffer[i] = string;
-		strlcpy(string, buf, strlen(buf) + 1);
+		strscpy(string, buf, strlen(buf) + 1);
 		string += strlen(string) + 1;
 		buf += strlen(buf) + 1;
 	}
@@ -420,4 +420,3 @@ void sdio_free_func_cis(struct sdio_func *func)
 
 	func->tuples = NULL;
 }
-
