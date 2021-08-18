@@ -3,65 +3,64 @@
  * them to run sooner, but does not allow tons of sleepers to
  * rip the spread apart.
  */
-#define SCHED_FEAT_GENTLE_FAIR_SLEEPERS 0
+SCHED_FEAT(GENTLE_FAIR_SLEEPERS, false)
 
 /*
  * Place new tasks ahead so that they do not starve already running
  * tasks
  */
-#define SCHED_FEAT_START_DEBIT 1
+SCHED_FEAT(START_DEBIT, true)
 
 /*
  * Prefer to schedule the task we woke last (assuming it failed
  * wakeup-preemption), since its likely going to consume data we
  * touched, increases cache locality.
  */
-#define SCHED_FEAT_NEXT_BUDDY 1
+SCHED_FEAT(NEXT_BUDDY, true)
 
 /*
  * Prefer to schedule the task that ran last (when we did
  * wake-preempt) as that likely will touch the same data, increases
  * cache locality.
  */
-#define SCHED_FEAT_LAST_BUDDY 1
+SCHED_FEAT(LAST_BUDDY, true)
 
 /*
  * skip buddy i.e task called yield() is always skipped and the
  * next entity is selected to run irrespective of the vruntime
  */
-#define SCHED_FEAT_STRICT_SKIP_BUDDY 1
+SCHED_FEAT(STRICT_SKIP_BUDDY, true)
 
 /*
  * Consider buddies to be cache hot, decreases the likelyness of a
  * cache buddy being migrated away, increases cache locality.
  */
-#define SCHED_FEAT_CACHE_HOT_BUDDY 1
+SCHED_FEAT(CACHE_HOT_BUDDY, true)
 
 /*
  * Allow wakeup-time preemption of the current task:
  */
-#define SCHED_FEAT_WAKEUP_PREEMPTION 1
+SCHED_FEAT(WAKEUP_PREEMPTION, true)
 
-#define SCHED_FEAT_HRTICK 0
-#define SCHED_FEAT_DOUBLE_TICK 0
-#define SCHED_FEAT_LB_BIAS 0
+SCHED_FEAT(HRTICK, false)
+SCHED_FEAT(DOUBLE_TICK, false)
+SCHED_FEAT(LB_BIAS, false)
 
 /*
  * Decrement CPU capacity based on time not spent running tasks
  */
-#define SCHED_FEAT_NONTASK_CAPACITY 0
+SCHED_FEAT(NONTASK_CAPACITY, false)
 
 /*
  * Queue remote wakeups on the target CPU and process them
  * using the scheduler IPI. Reduces rq->lock contention/bounces.
  */
-#define SCHED_FEAT_TTWU_QUEUE 1
+SCHED_FEAT(TTWU_QUEUE, true)
 
 /*
  * When doing wakeups, attempt to limit superfluous scans of the LLC domain.
  */
-#define SCHED_FEAT_SIS_AVG_CPU 0
-
+SCHED_FEAT(SIS_AVG_CPU, false)
 
 #ifdef HAVE_RT_PUSH_IPI
 /*
@@ -73,30 +72,27 @@
  * IPI to that CPU and let that CPU push the RT task to where
  * it should go may be a better scenario.
  */
-#define SCHED_FEAT_RT_PUSH_IPI 1
-#else
-#define SCHED_FEAT_RT_PUSH_IPI 0
+SCHED_FEAT(RT_PUSH_IPI, true)
 #endif
 
-#define SCHED_FEAT_FORCE_SD_OVERLAP 0
-#define SCHED_FEAT_RT_RUNTIME_SHARE 1
-#define SCHED_FEAT_LB_MIN 0
-#define SCHED_FEAT_ATTACH_AGE_LOAD 1
+SCHED_FEAT(FORCE_SD_OVERLAP, false)
+SCHED_FEAT(RT_RUNTIME_SHARE, true)
+SCHED_FEAT(LB_MIN, false)
+SCHED_FEAT(ATTACH_AGE_LOAD, true)
 
 /*
  * UtilEstimation. Use estimated CPU utilization.
  */
-#define SCHED_FEAT_UTIL_EST 1
+SCHED_FEAT(UTIL_EST, true)
 
 /*
  * Energy aware scheduling. Use platform energy model to guide scheduling
  * decisions optimizing for energy efficiency.
  */
-
 #ifdef CONFIG_DEFAULT_USE_ENERGY_AWARE
-#define SCHED_FEAT_ENERGY_AWARE 1
+SCHED_FEAT(ENERGY_AWARE, true)
 #else
-#define SCHED_FEAT_ENERGY_AWARE 0
+SCHED_FEAT(ENERGY_AWARE, false)
 #endif
 
 /*
@@ -105,18 +101,17 @@
  * If enabled, this can be used to inform the scheduler about capacity
  * restrictions.
  */
-#define SCHED_FEAT_MIN_CAPACITY_CAPPING 0
+SCHED_FEAT(MIN_CAPACITY_CAPPING, false)
 
 /*
  * Enforce the priority of candidates selected by find_best_target()
  * ON: If the target CPU saves any energy, use that.
  * OFF: Use whichever of target or backup saves most.
  */
-#define SCHED_FEAT_FBT_STRICT_ORDER 0
-
+SCHED_FEAT(FBT_STRICT_ORDER, false)
 /*
  * Enforce schedtune.prefer_idle to take need_idle path.
  * ON: schedtune.prefer_idle is replaced with need_idle
  * OFF: schedtune.prefer_idle is honored as is.
  */
-#define SCHED_FEAT_EAS_USE_NEED_IDLE 0
+SCHED_FEAT(EAS_USE_NEED_IDLE, false)
