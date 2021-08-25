@@ -364,8 +364,7 @@ void kgsl_pwrctrl_set_thermal_cycle(struct kgsl_device *device,
 		if (pwr->thermal_cycle == CYCLE_ENABLE) {
 			pwr->thermal_cycle = CYCLE_ACTIVE;
 			mod_timer(&pwr->thermal_timer, jiffies +
-					(msecs_to_jiffies(TH_HZ) -
-					 pwr->thermal_timeout));
+					(msecs_to_jiffies(TH_HZ) - pwr->thermal_timeout));
 			pwr->thermal_highlow = 1;
 		}
 	} else {
@@ -836,10 +835,8 @@ static unsigned int kgsl_pwrctrl_max_clock_get(struct kgsl_device *device)
 		unsigned int hfreq = freq;
 		unsigned int lfreq = pwr->pwrlevels[pwr->
 				thermal_pwrlevel + 1].gpu_freq;
-		freq = pwr->thermal_timeout *
-			(lfreq / msecs_to_jiffies(TH_HZ)) +
-			(msecs_to_jiffies(TH_HZ) - pwr->thermal_timeout) *
-			(hfreq / msecs_to_jiffies(TH_HZ));
+		freq = pwr->thermal_timeout * (lfreq / msecs_to_jiffies(TH_HZ)) +
+			(msecs_to_jiffies(TH_HZ) - pwr->thermal_timeout) * (hfreq / msecs_to_jiffies(TH_HZ));
 	}
 
 	return freq;

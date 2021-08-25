@@ -302,7 +302,7 @@ static bool blk_kick_flush(struct request_queue *q, struct blk_flush_queue *fq)
 	/* C2 and C3 */
 	if (!list_empty(&fq->flush_data_in_flight) &&
 	    time_before(jiffies,
-			fq->flush_pending_since + FLUSH_PENDING_TIMEOUT))
+			fq->flush_pending_since + msecs_to_jiffies(FLUSH_PENDING_TIMEOUT)))
 		return false;
 
 	/*
