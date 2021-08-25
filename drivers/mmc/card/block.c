@@ -459,11 +459,11 @@ MODULE_PARM_DESC(cache_size, "MB high speed memory or SLC cache");
  *  speed   - unsigned KB/s transfer rate
  */
 #define size_and_speed_to_jiffies(size, speed) \
-		((size) * HZ / (speed) / 1024UL)
+		((size) * msecs_to_jiffies(1000) / (speed) / 1024UL)
 #define jiffies_and_speed_to_size(jiffies, speed) \
-		(((speed) * (jiffies) * 1024UL) / HZ)
+		(((speed) * (jiffies) * 1024UL) / msecs_to_jiffies(1000))
 #define jiffies_and_size_to_speed(jiffies, size) \
-		((size) * HZ / (jiffies) / 1024UL)
+		((size) * msecs_to_jiffies(1000) / (jiffies) / 1024UL)
 
 /* Limits to report warning */
 /* jiffies_and_size_to_speed(10*HZ, queue_max_hw_sectors(q) * 512UL) ~ 25 */
