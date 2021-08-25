@@ -47,7 +47,7 @@ void mmc_set_initial_state(struct mmc_host *host);
 
 static inline void mmc_delay(unsigned int ms)
 {
-	if (ms < 1000 / HZ) {
+	if (ms < 1000 / msecs_to_jiffies(1000)) {
 		cond_resched();
 		mdelay(ms);
 	} else if (ms < jiffies_to_msecs(2)) {
