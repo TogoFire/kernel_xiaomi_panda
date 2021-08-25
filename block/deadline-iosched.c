@@ -430,8 +430,8 @@ STORE_FUNCTION(deadline_fifo_batch_store, &dd->fifo_batch, 0, INT_MAX, 0);
 				      deadline_##name##_store)
 
 static struct elv_fs_entry deadline_attrs[] = {
-	DD_ATTR(read_expire),
-	DD_ATTR(write_expire),
+	DD_ATTR(msecs_to_jiffies(read_expire)),
+	DD_ATTR(msecs_to_jiffies(write_expire)),
 	DD_ATTR(writes_starved),
 	DD_ATTR(front_merges),
 	DD_ATTR(fifo_batch),
