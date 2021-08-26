@@ -1549,6 +1549,7 @@ static int queue_no_inline_encryption(struct dm_target *ti,
 	struct request_queue *q = bdev_get_queue(dev->bdev);
 
 	return q && !blk_queue_inlinecrypt(q);
+
 }
 
 static int device_not_write_same_capable(struct dm_target *ti, struct dm_dev *dev,
@@ -1842,4 +1843,3 @@ void dm_table_run_md_queue_async(struct dm_table *t)
 	}
 }
 EXPORT_SYMBOL(dm_table_run_md_queue_async);
-

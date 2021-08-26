@@ -23,7 +23,7 @@
 #include "u_uac2.h"
 
 /* Keep everyone on toes */
-#define USB_XFERS	8
+#define USB_XFERS	32
 
 /*
  * The driver implements a simple UAC_2 topology.
@@ -1076,28 +1076,13 @@ free_ep(struct uac2_rtd_params *prm, struct usb_ep *ep)
 			"%s:%d Error!\n", __func__, __LINE__);
 }
 
-static int set_ep_max_packet_size(const struct f_uac2_opts *uac2_opts,
+static void set_ep_max_packet_size(const struct f_uac2_opts *uac2_opts,
 	struct usb_endpoint_descriptor *ep_desc,
-	enum usb_device_speed speed, bool is_playback)
+	unsigned int factor, bool is_playback)
 {
 	int chmask, srate, ssize;
-	u16 max_size_bw, max_size_ep;
-	unsigned int factor;
-
-	switch (speed) {
-	case USB_SPEED_FULL:
-		max_size_ep = 1023;
-		factor = 1000;
-		break;
-
-	case USB_SPEED_HIGH:
-		max_size_ep = 1024;
-		factor = 8000;
-		break;
-
-	default:
-		return -EINVAL;
-	}
+	u16 max_packet_size;
+	u8 bInterval;
 
 	if (is_playback) {
 		chmask = uac2_opts->p_chmask;
@@ -1109,12 +1094,30 @@ static int set_ep_max_packet_size(const struct f_uac2_opts *uac2_opts,
 		ssize = uac2_opts->c_ssize;
 	}
 
-	max_size_bw = num_channels(chmask) * ssize *
-		((srate / (factor / (1 << (ep_desc->bInterval - 1)))) + 1);
-	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_size_bw,
-						    max_size_ep));
+	max_packet_size = num_channels(chmask) * ssize *
+		DIV_ROUND_UP(srate, factor / (1 << (ep_desc->bInterval - 1)));
 
-	return 0;
+	/* max_packet_size can vary based on sample rate, no. of channels &
+	 * sample size. If max_packet_size > ep_desc->wMaxPacketSize(i.e 1024),
+	 * reduce bInterval accordingly & recalculate max_packet_size. Else
+	 * required data rate may not fit per second.
+	 */
+	if (factor == 8000) {
+		if (max_packet_size > ep_desc->wMaxPacketSize) {
+			bInterval = ep_desc->bInterval -
+				(max_packet_size/ep_desc->wMaxPacketSize);
+			if ((bInterval < 1) || (bInterval > ep_desc->bInterval))
+				ep_desc->bInterval = 1;
+			else
+				ep_desc->bInterval = bInterval;
+
+			max_packet_size = num_channels(chmask) * ssize *
+				DIV_ROUND_UP(srate,
+				factor / (1 << (ep_desc->bInterval - 1)));
+		}
+	}
+	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_packet_size,
+				le16_to_cpu(ep_desc->wMaxPacketSize)));
 }
 
 static int
@@ -1220,34 +1223,15 @@ afunc_bind(struct usb_configuration *cfg, struct usb_function *fn)
 	uac2->p_prm.uac2 = uac2;
 	uac2->c_prm.uac2 = uac2;
 
+	hs_epin_desc.bInterval = 4;
+	hs_epout_desc.bInterval = 4;
+	hs_epin_desc.wMaxPacketSize = cpu_to_le16(1024);
+	hs_epout_desc.wMaxPacketSize = cpu_to_le16(1024);
 	/* Calculate wMaxPacketSize according to audio bandwidth */
-	ret = set_ep_max_packet_size(uac2_opts, &fs_epin_desc, USB_SPEED_FULL,
-				     true);
-	if (ret < 0) {
-		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
-		return ret;
-	}
-
-	ret = set_ep_max_packet_size(uac2_opts, &fs_epout_desc, USB_SPEED_FULL,
-				     false);
-	if (ret < 0) {
-		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
-		return ret;
-	}
-
-	ret = set_ep_max_packet_size(uac2_opts, &hs_epin_desc, USB_SPEED_HIGH,
-				     true);
-	if (ret < 0) {
-		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
-		return ret;
-	}
-
-	ret = set_ep_max_packet_size(uac2_opts, &hs_epout_desc, USB_SPEED_HIGH,
-				     false);
-	if (ret < 0) {
-		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
-		return ret;
-	}
+	set_ep_max_packet_size(uac2_opts, &fs_epin_desc, 1000, true);
+	set_ep_max_packet_size(uac2_opts, &fs_epout_desc, 1000, false);
+	set_ep_max_packet_size(uac2_opts, &hs_epin_desc, 8000, true);
+	set_ep_max_packet_size(uac2_opts, &hs_epout_desc, 8000, false);
 
 	hs_epout_desc.bEndpointAddress = fs_epout_desc.bEndpointAddress;
 	hs_epin_desc.bEndpointAddress = fs_epin_desc.bEndpointAddress;

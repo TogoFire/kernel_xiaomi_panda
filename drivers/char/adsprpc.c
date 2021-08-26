@@ -272,8 +272,8 @@ struct fastrpc_static_pd {
 	struct notifier_block pdrnb;
 	struct notifier_block get_service_nb;
 	void *pdrhandle;
-	int pdrcount;
-	int prevpdrcount;
+	uint64_t pdrcount;
+	uint64_t prevpdrcount;
 	int ispdup;
 };
 
@@ -297,10 +297,10 @@ struct fastrpc_channel_ctx {
 	struct notifier_block nb;
 	struct kref kref;
 	int channel;
-	int sesscount;
-	int ssrcount;
+	uint64_t sesscount;
+	uint64_t ssrcount;
 	void *handle;
-	int prevssrcount;
+	uint64_t prevssrcount;
 	int issubsystemup;
 	int vmid;
 	struct secure_vm rhvm;
@@ -352,6 +352,7 @@ struct fastrpc_mmap {
 	int uncached;
 	int secure;
 	uintptr_t attr;
+	bool is_filemap; /*flag to indicate map used in process init*/
 };
 
 enum fastrpc_perfkeys {
@@ -396,7 +397,7 @@ struct fastrpc_file {
 	int sessionid;
 	int tgid;
 	int cid;
-	int ssrcount;
+	uint64_t ssrcount;
 	int pd;
 	char *spdname;
 	int file_close;
@@ -407,6 +408,7 @@ struct fastrpc_file {
 	struct mutex perf_mutex;
 	struct pm_qos_request pm_qos_req;
 	int qos_request;
+	struct mutex pm_qos_mutex;
 	struct mutex map_mutex;
 	struct mutex fl_map_mutex;
 	int refcount;
@@ -700,9 +702,10 @@ static int fastrpc_mmap_remove(struct fastrpc_file *fl, uintptr_t va,
 
 	spin_lock(&me->hlock);
 	hlist_for_each_entry_safe(map, n, &me->maps, hn) {
-		if (map->raddr == va &&
+		if (map->refs == 1 && map->raddr == va &&
 			map->raddr + map->len == va + len &&
-			map->refs == 1) {
+			/*Remove map if not used in process initialization*/
+			!map->is_filemap) {
 			match = map;
 			hlist_del_init(&map->hn);
 			break;
@@ -714,9 +717,10 @@ static int fastrpc_mmap_remove(struct fastrpc_file *fl, uintptr_t va,
 		return 0;
 	}
 	hlist_for_each_entry_safe(map, n, &fl->maps, hn) {
-		if (map->raddr == va &&
+		if (map->refs == 1 && map->raddr == va &&
 			map->raddr + map->len == va + len &&
-			map->refs == 1) {
+			/*Remove map if not used in process initialization*/
+			!map->is_filemap) {
 			match = map;
 			hlist_del_init(&map->hn);
 			break;
@@ -862,6 +866,7 @@ static int fastrpc_mmap_create(struct fastrpc_file *fl, int fd,
 	map->fl = fl;
 	map->fd = fd;
 	map->attr = attr;
+	map->is_filemap = false;
 	if (mflags == ADSP_MMAP_HEAP_ADDR ||
 				mflags == ADSP_MMAP_REMOTE_HEAP_ADDR) {
 		unsigned long dma_attrs = DMA_ATTR_SKIP_ZEROING |
@@ -1021,6 +1026,12 @@ static int fastrpc_buf_alloc(struct fastrpc_file *fl, size_t size,
 	int err = 0, vmid;
 	struct fastrpc_buf *buf = NULL, *fr = NULL;
 	struct hlist_node *n;
+
+	VERIFY(err, fl->sctx != NULL);
+	if (err) {
+		err = -EBADR;
+		goto bail;
+	}
 
 	VERIFY(err, size > 0 && size < MAX_SIZE_LIMIT);
 	if (err) {
@@ -2135,6 +2146,10 @@ static int fastrpc_internal_invoke(struct fastrpc_file *fl, uint32_t mode,
 	if (err)
 		goto bail;
  bail:
+	if (ctx && ctx->handle) {
+		glink_rx_done(ctx->handle, ctx->ptr, true);
+		ctx->handle = NULL;
+	}
 	if (ctx && interrupted == -ERESTARTSYS)
 		context_save_interrupted(ctx);
 	else if (ctx)
@@ -2247,6 +2262,8 @@ static int fastrpc_init_process(struct fastrpc_file *fl,
 			mutex_lock(&fl->fl_map_mutex);
 			VERIFY(err, !fastrpc_mmap_create(fl, init->filefd, 0,
 				init->file, init->filelen, mflags, &file));
+			if (file)
+				file->is_filemap = true;
 			mutex_unlock(&fl->fl_map_mutex);
 			if (err)
 				goto bail;
@@ -2773,18 +2790,18 @@ static int fastrpc_internal_munmap(struct fastrpc_file *fl,
 	mutex_unlock(&fl->fl_map_mutex);
 	if (err)
 		goto bail;
-	VERIFY(err, map != NULL);
-	if (err) {
+	if (map) {
+		VERIFY(err, !fastrpc_munmap_on_dsp(fl, map->raddr,
+				map->phys, map->size, map->flags));
+		if (err)
+			goto bail;
+		mutex_lock(&fl->fl_map_mutex);
+		fastrpc_mmap_free(map, 0);
+		mutex_unlock(&fl->fl_map_mutex);
+	} else {
 		err = -EINVAL;
 		goto bail;
 	}
-	VERIFY(err, !fastrpc_munmap_on_dsp(fl, map->raddr,
-			map->phys, map->size, map->flags));
-	if (err)
-		goto bail;
-	mutex_lock(&fl->fl_map_mutex);
-	fastrpc_mmap_free(map, 0);
-	mutex_unlock(&fl->fl_map_mutex);
 bail:
 	if (err && map) {
 		mutex_lock(&fl->fl_map_mutex);
@@ -2918,7 +2935,8 @@ static int fastrpc_session_alloc_locked(struct fastrpc_channel_ctx *chan,
 	int secure, int sharedcb, struct fastrpc_session_ctx **session)
 {
 	struct fastrpc_apps *me = &gfa;
-	int idx = 0, err = 0;
+	uint64_t idx = 0;
+	int err = 0;
 
 	if (chan->sesscount) {
 		for (idx = 0; idx < chan->sesscount; ++idx) {
@@ -3114,6 +3132,7 @@ static int fastrpc_file_free(struct fastrpc_file *fl)
 	mutex_destroy(&fl->perf_mutex);
 	mutex_destroy(&fl->fl_map_mutex);
 	mutex_destroy(&fl->map_mutex);
+	mutex_destroy(&fl->pm_qos_mutex);
 	kfree(fl);
 	return 0;
 }
@@ -3290,14 +3309,14 @@ static ssize_t fastrpc_debugfs_read(struct file *filp, char __user *buffer,
 				 DEBUGFS_SIZE - len, "|%-9d",
 				 chan->kref.refcount.counter);
 			len += scnprintf(fileinfo + len,
-				 DEBUGFS_SIZE - len, "|%-9d",
-				 chan->sesscount);
+				DEBUGFS_SIZE - len, "|0x%-10x",
+				(unsigned int)chan->sesscount);
 			len += scnprintf(fileinfo + len,
 				 DEBUGFS_SIZE - len, "|%-14d",
 				 chan->issubsystemup);
 			len += scnprintf(fileinfo + len,
-				 DEBUGFS_SIZE - len, "|%-9d",
-				 chan->ssrcount);
+				DEBUGFS_SIZE - len, "|0x%-9x",
+				(unsigned int)chan->ssrcount);
 			for (j = 0; j < chan->sesscount; j++) {
 				sess_used += chan->session[j].used;
 				}
@@ -3353,7 +3372,8 @@ static ssize_t fastrpc_debugfs_read(struct file *filp, char __user *buffer,
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"%s %7s %d\n", "sessionid", ":", fl->sessionid);
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
-			"%s %8s %d\n", "ssrcount", ":", fl->ssrcount);
+			"%s %8s 0x%x\n", "ssrcount", ":",
+				(unsigned int)fl->ssrcount);
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"%s %8s %d\n", "refcount", ":", fl->refcount);
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
@@ -3615,6 +3635,7 @@ static int fastrpc_device_open(struct inode *inode, struct file *filp)
 	hlist_add_head(&fl->hn, &me->drivers);
 	spin_unlock(&me->hlock);
 	mutex_init(&fl->perf_mutex);
+	mutex_init(&fl->pm_qos_mutex);
 	return 0;
 }
 
@@ -3717,12 +3738,14 @@ static int fastrpc_internal_control(struct fastrpc_file *fl,
 		VERIFY(err, latency != 0);
 		if (err)
 			goto bail;
+		mutex_lock(&fl->pm_qos_mutex);
 		if (!fl->qos_request) {
 			pm_qos_add_request(&fl->pm_qos_req,
 				PM_QOS_CPU_DMA_LATENCY, latency);
 			fl->qos_request = 1;
 		} else
 			pm_qos_update_request(&fl->pm_qos_req, latency);
+		mutex_unlock(&fl->pm_qos_mutex);
 		break;
 	case FASTRPC_CONTROL_SMMU:
 		if (!me->legacy)
