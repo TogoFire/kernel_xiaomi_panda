@@ -3933,8 +3933,8 @@ static int fastrpc_update_cdsp_support(struct fastrpc_file *fl)
 	err = fastrpc_get_info_from_kernel(dsp_query, fl);
 	if (err)
 		goto bail;
-	if (!(dsp_query->dsp_attributes[1]))
-		me->channel[CDSP_DOMAIN_ID].unsigned_support = false;
+	//if (!(dsp_query->dsp_attributes[1]))
+		//me->channel[CDSP_DOMAIN_ID].unsigned_support = false;
 bail:
 	kfree(dsp_query);
 	return err;
