@@ -86,7 +86,6 @@ endif
 
 ifneq ($(strip $(lib-y) $(lib-m) $(lib-)),)
 lib-target := $(obj)/lib.a
-obj-y += $(obj)/lib-ksyms.o
 endif
 
 ifneq ($(strip $(obj-y) $(obj-m) $(obj-) $(subdir-m) $(lib-target)),)
@@ -550,49 +549,6 @@ $(lib-target): $(lib-y) FORCE
 	$(call if_changed,link_l_target)
 
 targets += $(lib-target)
-
-dummy-object = $(obj)/.lib_exports.o
-ksyms-lds = $(dot-target).lds
-ifdef CONFIG_HAVE_UNDERSCORE_SYMBOL_PREFIX
-ref_prefix = EXTERN(_
-else
-ref_prefix = EXTERN(
-endif
-
-filter_export_list = sed -ne '/___ksymtab/s/.*+\([^ "]*\).*/$(ref_prefix)\1)/p'
-link_export_list = rm -f $(dummy-object);\
-	echo | $(CC) $(a_flags) -c -o $(dummy-object) -x assembler -;\
-	$(LD) $(ld_flags) -r -o $@ -T $(ksyms-lds) $(dummy-object);\
-	rm $(dummy-object) $(ksyms-lds)
-
-quiet_cmd_export_list = EXPORTS $@
-
-ifdef CONFIG_LTO_CLANG
-# objdump doesn't understand IR files and llvm-dis doesn't support archives,
-# so we'll walk through each file in the archive separately
-cmd_export_list = 					\
-	rm -f $(ksyms-lds);				\
-	for o in $$($(AR) t $<); do			\
-		if $(OBJDUMP) -h $$o >/dev/null 2>/dev/null; then \
-			$(OBJDUMP) -h $$o | 		\
-				$(filter_export_list) 	\
-				>>$(ksyms-lds);		\
-		else					\
-			$(LLVM_DIS) -o=- $$o |		\
-				$(filter_export_list) 	\
-				>>$(ksyms-lds);		\
-		fi; 					\
-	done;						\
-	$(link_export_list)
-else
-cmd_export_list = $(OBJDUMP) -h $< | $(filter_export_list) >$(ksyms-lds); \
-	$(link_export_list)
-endif
-
-$(obj)/lib-ksyms.o: $(lib-target) FORCE
-	$(call if_changed,export_list)
-
-targets += $(obj)/lib-ksyms.o
 
 endif
 
