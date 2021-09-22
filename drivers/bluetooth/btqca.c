@@ -116,7 +116,7 @@ static int qca_send_reset(struct hci_dev *hdev)
 }
 
 static void qca_tlv_check_data(struct rome_config *config,
-				const struct firmware *fw)
+				u8 *fw_data)
 {
 	const u8 *data;
 	u32 type_len;
@@ -126,7 +126,7 @@ static void qca_tlv_check_data(struct rome_config *config,
 	struct tlv_type_patch *tlv_patch;
 	struct tlv_type_nvm *tlv_nvm;
 
-	tlv = (struct tlv_type_hdr *)fw->data;
+	tlv = (struct tlv_type_hdr *)fw_data;
 
 	type_len = le32_to_cpu(tlv->type_len);
 	length = (type_len >> 8) & 0x00ffffff;
@@ -273,8 +273,9 @@ static int qca_download_firmware(struct hci_dev *hdev,
 	const struct firmware *fw;
 	u32 type_len, length;
 	struct tlv_type_hdr *tlv;
+	u8 *data;
 	const u8 *segment;
-	int ret, remain, i = 0;
+	int ret, size, remain, i = 0;
 
 	bt_dev_info(hdev, "ROME Downloading %s", config->fwname);
 	ret = request_firmware(&fw, config->fwname, &hdev->dev);
@@ -284,6 +285,18 @@ static int qca_download_firmware(struct hci_dev *hdev,
 		ret = ret ? ret : -EINVAL;
 		return ret;
 	}
+
+	size = fw->size;
+	data = vmalloc(fw->size);
+	if (!data) {
+		bt_dev_err(hdev, "QCA Failed to allocate memory for file: %s",
+			   config->fwname);
+		release_firmware(fw);
+		return -ENOMEM;
+	}
+
+	memcpy(data, fw->data, size);
+	release_firmware(fw);
 
 	if (config->type != TLV_TYPE_NVM &&
 		config->type != TLV_TYPE_PATCH) {
@@ -322,8 +335,13 @@ static int qca_download_firmware(struct hci_dev *hdev,
 
 	rome_tlv_check_data(config, fw);
 
-	segment = fw->data;
-	remain = fw->size;
+	memcpy(data, fw->data, size);
+	release_firmware(fw);
+
+	qca_tlv_check_data(config, data);
+
+	segment = data;
+	remain = size;
 	while (remain > 0) {
 		int segsize = min(MAX_SIZE_PER_TLV_SEGMENT, remain);
 
@@ -343,7 +361,8 @@ static int qca_download_firmware(struct hci_dev *hdev,
 	}
 
 exit:
-	release_firmware(fw);
+	vfree(data);
+
 	return ret;
 }
 
