@@ -42,7 +42,7 @@
 
 /* modified by zhongshengbin for fingerprint D1S-634 begin 2018-03-04 */
 /* #define FPC_TTW_HOLD_TIME 1000 */
-#define FPC_TTW_HOLD_TIME		2000
+#define FPC_TTW_HOLD_TIME		1000
 #define FP_UNLOCK_REJECTION_TIMEOUT	(FPC_TTW_HOLD_TIME - 500)
 /* modified by zhongshengbin for fingerprint D1S-634 end 2018-03-04 */
 
