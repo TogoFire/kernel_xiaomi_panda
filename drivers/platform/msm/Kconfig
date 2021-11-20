@@ -171,6 +171,13 @@ config QPNP_REVID
 config GPIO_USB_DETECT
 	tristate "GPIO-based USB VBUS Detection"
 	depends on POWER_SUPPLY
+
+config DISABLE_IPA_WAKELOCKS
+	tristate "Disable IPA_V2 Wakelocks"
+	depends on IPA
+	help
+	  Disables the wakelocks created by ipa driver in order to save power
+
 	help
 	  This driver supports external USB VBUS detection circuitry whose
 	  output is connected to a GPIO. The driver in turn notifies the

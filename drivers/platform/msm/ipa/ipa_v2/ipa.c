@@ -3478,6 +3478,7 @@ void ipa2_dec_client_disable_clks(struct ipa_active_client_logging_info *id)
 	ipa_active_clients_unlock();
 }
 
+#ifndef CONFIG_DISABLE_IPA_WAKELOCKS
 #ifdef CONFIG_IPA_WAKELOCK
 /**
 * ipa_inc_acquire_wakelock() - Increase active clients counter, and
@@ -3525,6 +3526,7 @@ void ipa_dec_release_wakelock(enum ipa_wakelock_ref_client ref_client)
 #else
 void ipa_inc_acquire_wakelock(enum ipa_wakelock_ref_client ref_client) {}
 void ipa_dec_release_wakelock(enum ipa_wakelock_ref_client ref_client) {}
+#endif
 #endif
 
 static int ipa_setup_bam_cfg(const struct ipa_plat_drv_res *res)
@@ -3773,12 +3775,14 @@ void ipa_suspend_handler(enum ipa_irq_type interrupt,
 					atomic_set(
 						&ipa_ctx->sps_pm.dec_clients,
 						1);
+#ifndef CONFIG_DISABLE_IPA_WAKELOCKS
 					/*
 					 * acquire wake lock as long as suspend
 					 * vote is held
 					 */
 					ipa_inc_acquire_wakelock(
 						IPA_WAKELOCK_REF_CLIENT_SPS);
+#endif
 					ipa_sps_process_irq_schedule_rel();
 				}
 				mutex_unlock(&ipa_ctx->sps_pm.sps_pm_lock);
@@ -3851,7 +3855,9 @@ static void ipa_sps_release_resource(struct work_struct *work)
 			ipa_sps_process_irq_schedule_rel();
 		} else {
 			atomic_set(&ipa_ctx->sps_pm.dec_clients, 0);
+#ifndef CONFIG_DISABLE_IPA_WAKELOCKS
 			ipa_dec_release_wakelock(IPA_WAKELOCK_REF_CLIENT_SPS);
+#endif
 			IPA_ACTIVE_CLIENTS_DEC_SPECIAL("SPS_RESOURCE");
 		}
 	}
@@ -4344,9 +4350,11 @@ static int ipa_init(const struct ipa_plat_drv_res *resource_p,
 
 
 
+#ifndef CONFIG_DISABLE_IPA_WAKELOCKS
 	/* Create a wakeup source. */
 	wakeup_source_init(&ipa_ctx->w_lock, "IPA_WS");
 	spin_lock_init(&ipa_ctx->wakelock_ref_cnt.spinlock);
+#endif
 
 	/* Initialize the SPS PM lock. */
 	mutex_init(&ipa_ctx->sps_pm.sps_pm_lock);
