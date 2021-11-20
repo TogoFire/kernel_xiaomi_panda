@@ -3709,6 +3709,7 @@ CONFIG_PRONTO_WLAN=y
 # Qualcomm technologies inc. MSM specific device drivers
 #
 CONFIG_IPA=y
+CONFIG_DISABLE_IPA_WAKELOCKS=y
 # CONFIG_IPA_WAKELOCK is not set
 CONFIG_RMNET_IPA=y
 # CONFIG_GSI is not set
