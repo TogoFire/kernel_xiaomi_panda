@@ -425,18 +425,7 @@ static ssize_t irq_get(struct device *dev,
 
 	return scnprintf(buf, PAGE_SIZE, "%i\n", irq);
 }
-
-/*
- * writing to the irq node will just drop a printk message
- * and return success, used for latency measurement.
- */
-static ssize_t irq_ack(struct device *dev,
-	struct device_attribute *attr,
-	const char *buf, size_t count)
-{
-	return count;
-}
-static DEVICE_ATTR(irq, S_IRUSR | S_IWUSR, irq_get, irq_ack);
+static DEVICE_ATTR(irq, S_IRUSR | S_IWUSR, irq_get, irq_get);
 
 /* modified by zhongshengbin for fingerprint D1S-634 begin 2018-03-04 */
 static ssize_t fingerdown_wait_set(struct device *dev,
