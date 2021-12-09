@@ -173,7 +173,7 @@ found:
  * backwards compatibility. Only prints a debug print that it is
  * disabled.
  */
-static ssize_t clk_enable_set(struct device *dev,
+static ssize_t clk_enable_store(struct device *dev,
 	struct device_attribute *attr,
 	const char *buf, size_t count)
 {
@@ -182,7 +182,7 @@ static ssize_t clk_enable_set(struct device *dev,
 
 	return count;
 }
-static DEVICE_ATTR(clk_enable, S_IWUSR, NULL, clk_enable_set);
+static DEVICE_ATTR_WO(clk_enable);
 
 /*
  * Will try to select the set of pins (GPIOS) defined in a pin control node of
@@ -221,7 +221,7 @@ exit:
 	return rc;
 }
 
-static ssize_t pinctl_set(struct device *dev,
+static ssize_t pinctl_set_store(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct fpc1020_data *fpc1020 = dev_get_drvdata(dev);
@@ -232,9 +232,9 @@ static ssize_t pinctl_set(struct device *dev,
 
 	return rc ? rc : count;
 }
-static DEVICE_ATTR(pinctl_set, S_IWUSR, NULL, pinctl_set);
+static DEVICE_ATTR_WO(pinctl_set);
 
-static ssize_t regulator_enable_set(struct device *dev,
+static ssize_t regulator_enable_store(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct fpc1020_data *fpc1020 = dev_get_drvdata(dev);
@@ -258,7 +258,7 @@ static ssize_t regulator_enable_set(struct device *dev,
 
 	return rc ? rc : count;
 }
-static DEVICE_ATTR(regulator_enable, S_IWUSR, NULL, regulator_enable_set);
+static DEVICE_ATTR_WO(regulator_enable);
 
 static int hw_reset(struct fpc1020_data *fpc1020)
 {
@@ -287,7 +287,7 @@ exit:
 	return rc;
 }
 
-static ssize_t hw_reset_set(struct device *dev,
+static ssize_t hw_reset_store(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count)
 {
 	int rc;
@@ -303,7 +303,7 @@ static ssize_t hw_reset_set(struct device *dev,
 
 	return rc ? rc : count;
 }
-static DEVICE_ATTR(hw_reset, S_IWUSR, NULL, hw_reset_set);
+static DEVICE_ATTR_WO(hw_reset);
 
 /*
  * Will setup GPIOs, and regulators to correctly initialize the touch sensor to
@@ -372,7 +372,7 @@ exit:
  *
  * @see device_prepare
  */
-static ssize_t device_prepare_set(struct device *dev,
+static ssize_t device_prepare_store(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count)
 {
 	int rc;
@@ -387,13 +387,13 @@ static ssize_t device_prepare_set(struct device *dev,
 
 	return rc ? rc : count;
 }
-static DEVICE_ATTR(device_prepare, S_IWUSR, NULL, device_prepare_set);
+static DEVICE_ATTR_WO(device_prepare);
 
 /*
  * sysfs node for controlling whether the driver is allowed
  * to wake up the platform on interrupt.
  */
-static ssize_t wakeup_enable_set(struct device *dev,
+static ssize_t wakeup_enable_store(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct fpc1020_data *fpc1020 = dev_get_drvdata(dev);
@@ -410,25 +410,24 @@ static ssize_t wakeup_enable_set(struct device *dev,
 
 	return ret;
 }
-static DEVICE_ATTR(wakeup_enable, S_IWUSR, NULL, wakeup_enable_set);
+static DEVICE_ATTR_WO(wakeup_enable);
 
 /*
  * sysf node to check the interrupt status of the sensor, the interrupt
  * handler should perform sysf_notify to allow userland to poll the node.
  */
-static ssize_t irq_get(struct device *dev,
-	struct device_attribute *attr,
-	char *buf)
+static ssize_t irq_show(struct device *dev,
+	struct device_attribute *attr, char *buf)
 {
 	struct fpc1020_data *fpc1020 = dev_get_drvdata(dev);
 	int irq = gpio_get_value(fpc1020->irq_gpio);
 
 	return scnprintf(buf, PAGE_SIZE, "%i\n", irq);
 }
-static DEVICE_ATTR(irq, S_IRUSR | S_IWUSR, irq_get, irq_get);
+static DEVICE_ATTR_RO(irq);
 
 /* modified by zhongshengbin for fingerprint D1S-634 begin 2018-03-04 */
-static ssize_t fingerdown_wait_set(struct device *dev,
+static ssize_t fingerdown_wait_store(struct device *dev,
 	struct device_attribute *attr,
 	const char *buf, size_t count)
 {
@@ -443,10 +442,10 @@ static ssize_t fingerdown_wait_set(struct device *dev,
 
 	return count;
 }
-static DEVICE_ATTR(fingerdown_wait, S_IWUSR, NULL, fingerdown_wait_set);
+static DEVICE_ATTR_WO(fingerdown_wait);
 /* modified by zhongshengbin for fingerprint D1S-634 end 2018-03-04 */
 
-static ssize_t compatible_all_set(struct device *dev,
+static ssize_t compatible_all_store(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count)
 {
 	int rc;
@@ -539,7 +538,7 @@ static ssize_t compatible_all_set(struct device *dev,
 exit:
 	return -EINVAL;
 }
-static DEVICE_ATTR(compatible_all, S_IWUSR, NULL, compatible_all_set);
+static DEVICE_ATTR_WO(compatible_all);
 
 static struct attribute *attributes[] = {
 	&dev_attr_pinctl_set.attr,
