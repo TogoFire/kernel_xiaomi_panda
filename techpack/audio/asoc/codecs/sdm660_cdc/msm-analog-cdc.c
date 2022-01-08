@@ -1387,7 +1387,7 @@ static int msm_anlg_cdc_codec_enable_on_demand_supply(
 	struct on_demand_supply *supply;
 
 	if (w->shift >= ON_DEMAND_SUPPLIES_MAX) {
-		dev_err(codec->dev, "%s: error index > MAX Demand supplies",
+		dev_dbg(codec->dev, "%s: error index > MAX Demand supplies",
 			__func__);
 		ret = -EINVAL;
 		goto out;
@@ -2149,7 +2149,7 @@ static int msm_anlg_cdc_codec_enable_adc(struct snd_soc_dapm_widget *w,
 		 (w->reg == MSM89XX_PMIC_ANALOG_TX_3_EN))
 		init_bit_shift = 4;
 	else {
-		dev_err(codec->dev, "%s: Error, invalid adc register\n",
+		dev_dbg(codec->dev, "%s: Error, invalid adc register\n",
 			__func__);
 		return -EINVAL;
 	}
@@ -2486,7 +2486,7 @@ static int msm_anlg_cdc_codec_enable_micbias(struct snd_soc_dapm_widget *w,
 		micb_int_reg = MSM89XX_PMIC_ANALOG_MICB_1_INT_RBIAS;
 		break;
 	default:
-		dev_err(codec->dev,
+		dev_dbg(codec->dev,
 			"%s: Error, invalid micbias register 0x%x\n",
 			__func__, w->reg);
 		return -EINVAL;
@@ -2617,7 +2617,7 @@ static int sdm660_wcd_codec_enable_vdd_spkr(struct snd_soc_dapm_widget *w,
 		if (sdm660_cdc->spkdrv_reg) {
 			ret = regulator_enable(sdm660_cdc->spkdrv_reg);
 			if (ret)
-				dev_err(codec->dev,
+				dev_dbg(codec->dev,
 					"%s Failed to enable spkdrv reg %s\n",
 					__func__, MSM89XX_VDD_SPKDRV_NAME);
 		}
@@ -2626,7 +2626,7 @@ static int sdm660_wcd_codec_enable_vdd_spkr(struct snd_soc_dapm_widget *w,
 		if (sdm660_cdc->spkdrv_reg) {
 			ret = regulator_disable(sdm660_cdc->spkdrv_reg);
 			if (ret)
-				dev_err(codec->dev,
+				dev_dbg(codec->dev,
 					"%s: Failed to disable spkdrv_reg %s\n",
 					__func__, MSM89XX_VDD_SPKDRV_NAME);
 		}

@@ -958,7 +958,7 @@ int msm_pcm_routing_get_stream_app_type_cfg(
 		ret = -EINVAL;
 		goto done;
 	} else if (!is_mm_lsm_fe_id(fedai_id)) {
-		pr_err("%s: Invalid FE ID %d\n", __func__, fedai_id);
+		pr_debug("%s: Invalid FE ID %d\n", __func__, fedai_id);
 		ret = -EINVAL;
 		goto done;
 	} else if (session_type != SESSION_TYPE_RX &&
@@ -1429,7 +1429,7 @@ static int msm_pcm_routing_channel_mixer(int fe_id, bool perf_mode,
 	char *ch_map = NULL;
 
 	if (fe_id >= MSM_FRONTEND_DAI_MM_SIZE) {
-		pr_err("%s: invalid FE %d\n", __func__, fe_id);
+		pr_debug("%s: invalid FE %d\n", __func__, fe_id);
 		return 0;
 	}
 
@@ -2959,7 +2959,7 @@ static int msm_pcm_get_channel_rule_index(struct snd_kcontrol *kcontrol,
 	fe_id = ((struct soc_mixer_control *)
 			kcontrol->private_value)->shift;
 	if (fe_id >= MSM_FRONTEND_DAI_MM_SIZE) {
-		pr_err("%s: invalid FE %d\n", __func__, fe_id);
+		pr_debug("%s: invalid FE %d\n", __func__, fe_id);
 		return -EINVAL;
 	}
 
@@ -2976,7 +2976,7 @@ static int msm_pcm_put_channel_rule_index(struct snd_kcontrol *kcontrol,
 	fe_id = ((struct soc_mixer_control *)
 			kcontrol->private_value)->shift;
 	if (fe_id >= MSM_FRONTEND_DAI_MM_SIZE) {
-		pr_err("%s: invalid FE %d\n", __func__, fe_id);
+		pr_debug("%s: invalid FE %d\n", __func__, fe_id);
 		return -EINVAL;
 	}
 
@@ -2993,7 +2993,7 @@ static int msm_pcm_get_out_chs(struct snd_kcontrol *kcontrol,
 	fe_id = ((struct soc_multi_mixer_control *)
 			kcontrol->private_value)->shift;
 	if (fe_id >= MSM_FRONTEND_DAI_MM_SIZE) {
-		pr_err("%s: invalid FE %d\n", __func__, fe_id);
+		pr_debug("%s: invalid FE %d\n", __func__, fe_id);
 		return -EINVAL;
 	}
 
@@ -3010,7 +3010,7 @@ static int msm_pcm_put_out_chs(struct snd_kcontrol *kcontrol,
 			kcontrol->private_value)->shift;
 	out_ch = ucontrol->value.integer.value[0];
 	if (fe_id >= MSM_FRONTEND_DAI_MM_SIZE) {
-		pr_err("%s: invalid FE %d\n", __func__, fe_id);
+		pr_debug("%s: invalid FE %d\n", __func__, fe_id);
 		return -EINVAL;
 	}
 
@@ -3140,7 +3140,7 @@ static int msm_pcm_channel_mixer_get(struct snd_kcontrol *kcontrol,
 	fe_id = ((struct soc_enum *)
 			kcontrol->private_value)->shift_l;
 	if (fe_id >= MSM_FRONTEND_DAI_MM_SIZE) {
-		pr_err("%s: invalid FE %d\n", __func__, fe_id);
+		pr_debug("%s: invalid FE %d\n", __func__, fe_id);
 		return -EINVAL;
 	}
 
@@ -3159,7 +3159,7 @@ static int msm_pcm_channel_mixer_put(struct snd_kcontrol *kcontrol,
 	fe_id = ((struct soc_enum *)
 			kcontrol->private_value)->shift_l;
 	if (fe_id >= MSM_FRONTEND_DAI_MM_SIZE) {
-		pr_err("%s: invalid FE %d\n", __func__, fe_id);
+		pr_debug("%s: invalid FE %d\n", __func__, fe_id);
 		return -EINVAL;
 	}
 
@@ -3193,11 +3193,11 @@ static int msm_pcm_channel_input_be_put(struct snd_kcontrol *kcontrol,
 	fe_id = e->shift_l;
 	in_ch = e->shift_r;
 	if (fe_id >= MSM_FRONTEND_DAI_MM_SIZE) {
-		pr_err("%s: invalid FE %d\n", __func__, fe_id);
+		pr_debug("%s: invalid FE %d\n", __func__, fe_id);
 		return -EINVAL;
 	}
 	if (in_ch >= ADM_MAX_CHANNELS) {
-		pr_err("%s: invalid input channel %d\n", __func__, in_ch);
+		pr_debug("%s: invalid input channel %d\n", __func__, in_ch);
 		return -EINVAL;
 	}
 
@@ -3214,7 +3214,7 @@ static int msm_pcm_channel_input_be_get(struct snd_kcontrol *kcontrol,
 	fe_id = e->shift_l;
 	in_ch = e->shift_r;
 	if (fe_id >= MSM_FRONTEND_DAI_MM_SIZE) {
-		pr_err("%s: invalid FE %d\n", __func__, fe_id);
+		pr_debug("%s: invalid FE %d\n", __func__, fe_id);
 		return -EINVAL;
 	}
 	if (in_ch >= ADM_MAX_CHANNELS) {
@@ -3249,7 +3249,7 @@ static int msm_pcm_channel_weight_put(struct snd_kcontrol *kcontrol,
 	out_ch = ((struct soc_multi_mixer_control *)
 			kcontrol->private_value)->rshift;
 	if (fe_id >= MSM_FRONTEND_DAI_MM_SIZE) {
-		pr_err("%s: invalid FE %d\n", __func__, fe_id);
+		pr_debug("%s: invalid FE %d\n", __func__, fe_id);
 		return -EINVAL;
 	}
 	if (out_ch >= ADM_MAX_CHANNELS) {
@@ -3290,7 +3290,7 @@ static int msm_pcm_channel_weight_get(struct snd_kcontrol *kcontrol,
 	out_ch = ((struct soc_multi_mixer_control *)
 			kcontrol->private_value)->rshift;
 	if (fe_id >= MSM_FRONTEND_DAI_MM_SIZE) {
-		pr_err("%s: invalid FE %d\n", __func__, fe_id);
+		pr_debug("%s: invalid FE %d\n", __func__, fe_id);
 		return -EINVAL;
 	}
 	if (out_ch >= ADM_MAX_CHANNELS) {
@@ -15583,7 +15583,7 @@ static int msm_voice_sound_focus_put(struct snd_kcontrol *kcontrol,
 		sizeof(struct sound_focus_param));
 	ret = voc_set_sound_focus(soundFocusData);
 	if (ret) {
-		pr_err("%s: Error setting Sound Focus Params, err=%d\n",
+		pr_debug("%s: Error setting Sound Focus Params, err=%d\n",
 			  __func__, ret);
 
 		ret = -EINVAL;
@@ -15602,7 +15602,7 @@ static int msm_voice_sound_focus_get(struct snd_kcontrol *kcontrol,
 
 	ret = voc_get_sound_focus(&soundFocusData);
 	if (ret) {
-		pr_err("%s: Error getting Sound Focus Params, err=%d\n",
+		pr_debug("%s: Error getting Sound Focus Params, err=%d\n",
 			  __func__, ret);
 
 		ret = -EINVAL;
@@ -15634,7 +15634,7 @@ static int msm_voice_source_tracking_get(struct snd_kcontrol *kcontrol,
 
 	ret = voc_get_source_tracking(&sourceTrackingData);
 	if (ret) {
-		pr_err("%s: Error getting Source Tracking Params, err=%d\n",
+		pr_debug("%s: Error getting Source Tracking Params, err=%d\n",
 			  __func__, ret);
 
 		ret = -EINVAL;
@@ -15690,7 +15690,7 @@ static int msm_audio_get_copp_idx_from_port_id(int port_id, int session_type,
 			break;
 	}
 	if (i >= MSM_FRONTEND_DAI_MM_SIZE) {
-		pr_err("%s: Invalid FE, exiting\n", __func__);
+		pr_debug("%s: Invalid FE, exiting\n", __func__);
 
 		ret = -EINVAL;
 		goto done;
@@ -15760,7 +15760,7 @@ static int msm_audio_sound_focus_put(struct snd_kcontrol *kcontrol,
 	ret = msm_audio_get_copp_idx_from_port_id(port_id, SESSION_TYPE_TX,
 					    &copp_idx);
 	if (ret) {
-		pr_err("%s: Could not get copp idx for port_id=%d\n",
+		pr_debug("%s: Could not get copp idx for port_id=%d\n",
 			__func__, port_id);
 
 		ret = -EINVAL;
@@ -15772,7 +15772,7 @@ static int msm_audio_sound_focus_put(struct snd_kcontrol *kcontrol,
 
 	ret = adm_set_sound_focus(port_id, copp_idx, soundFocusData);
 	if (ret) {
-		pr_err("%s: Error setting Sound Focus Params, err=%d\n",
+		pr_debug("%s: Error setting Sound Focus Params, err=%d\n",
 			  __func__, ret);
 
 		ret = -EINVAL;
@@ -15803,7 +15803,7 @@ static int msm_audio_sound_focus_get(struct snd_kcontrol *kcontrol,
 	ret = msm_audio_get_copp_idx_from_port_id(port_id, SESSION_TYPE_TX,
 					    &copp_idx);
 	if (ret) {
-		pr_err("%s: Could not get copp idx for port_id=%d\n",
+		pr_debug("%s: Could not get copp idx for port_id=%d\n",
 			__func__, port_id);
 
 		ret = -EINVAL;
@@ -15812,7 +15812,7 @@ static int msm_audio_sound_focus_get(struct snd_kcontrol *kcontrol,
 
 	ret = adm_get_sound_focus(port_id, copp_idx, &soundFocusData);
 	if (ret) {
-		pr_err("%s: Error getting Sound Focus Params, err=%d\n",
+		pr_debug("%s: Error getting Sound Focus Params, err=%d\n",
 			  __func__, ret);
 
 		ret = -EINVAL;
@@ -15846,7 +15846,7 @@ static int msm_audio_source_tracking_get(struct snd_kcontrol *kcontrol,
 	ret = msm_audio_get_copp_idx_from_port_id(port_id, SESSION_TYPE_TX,
 					    &copp_idx);
 	if (ret) {
-		pr_err("%s: Could not get copp idx for port_id=%d\n",
+		pr_debug("%s: Could not get copp idx for port_id=%d\n",
 			__func__, port_id);
 
 		ret = -EINVAL;
@@ -15855,7 +15855,7 @@ static int msm_audio_source_tracking_get(struct snd_kcontrol *kcontrol,
 
 	ret = adm_get_source_tracking(port_id, copp_idx, &sourceTrackingData);
 	if (ret) {
-		pr_err("%s: Error getting Source Tracking Params, err=%d\n",
+		pr_debug("%s: Error getting Source Tracking Params, err=%d\n",
 			  __func__, ret);
 
 		ret = -EINVAL;
