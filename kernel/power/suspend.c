@@ -528,9 +528,9 @@ static int enter_state(suspend_state_t state)
 
 #ifndef CONFIG_SUSPEND_SKIP_SYNC
 	trace_suspend_resume(TPS("sync_filesystems"), 0, true);
-	pr_info("PM: Syncing filesystems ... ");
+	pr_debug("PM: Syncing filesystems ... ");
 	sys_sync();
-	pr_cont("done.\n");
+	pr_debug("done.\n");
 	trace_suspend_resume(TPS("sync_filesystems"), 0, false);
 #endif
 
