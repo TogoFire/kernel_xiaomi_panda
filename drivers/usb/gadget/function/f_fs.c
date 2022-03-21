@@ -410,7 +410,7 @@ static ssize_t ffs_ep0_write(struct file *file, const char __user *buf,
 
 		/* Handle data */
 		if (ffs->state == FFS_READ_DESCRIPTORS) {
-			pr_info("read descriptors\n");
+			pr_debug("read descriptors\n");
 			ret = __ffs_data_got_descs(ffs, data, len);
 			if (unlikely(ret < 0))
 				break;
@@ -418,7 +418,7 @@ static ssize_t ffs_ep0_write(struct file *file, const char __user *buf,
 			ffs->state = FFS_READ_STRINGS;
 			ret = len;
 		} else {
-			pr_info("read strings\n");
+			pr_debug("read strings\n");
 			ret = __ffs_data_got_strings(ffs, data, len);
 			if (unlikely(ret < 0))
 				break;
@@ -1923,7 +1923,7 @@ static void ffs_data_put(struct ffs_data *ffs)
 	/* to get updated ref atomic variable value */
 	smp_mb__before_atomic();
 	if (unlikely(atomic_dec_and_test(&ffs->ref))) {
-		pr_info("%s(): freeing\n", __func__);
+		pr_debug("%s(): freeing\n", __func__);
 		/* Clear ffs from global structure */
 		inst_status = name_to_inst_status(ffs->dev_name, false);
 		if (!IS_ERR(inst_status)) {
