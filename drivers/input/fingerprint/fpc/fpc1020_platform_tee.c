@@ -643,8 +643,7 @@ static int fpc1020_probe(struct platform_device *pdev)
 	if (!fpc1020) {
 		dev_err(dev,
 			"failed to allocate memory for struct fpc1020_data\n");
-		rc = -ENOMEM;
-		goto exit;
+		return -ENOMEM;
 	}
 
 	fpc1020->dev = dev;
@@ -652,8 +651,7 @@ static int fpc1020_probe(struct platform_device *pdev)
 
 	if (!np) {
 		dev_err(dev, "no of node found\n");
-		rc = -EINVAL;
-		goto exit;
+		return -EINVAL;
 	}
 	/* atomic_set(&fpc1020->wakeup_enabled, 0); */
 
