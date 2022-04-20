@@ -12444,6 +12444,10 @@ static const struct snd_kcontrol_new quin_mi2s_rx_port_mixer_controls[] = {
 	SOC_SINGLE_EXT("QUIN_MI2S_TX", MSM_BACKEND_DAI_QUINARY_MI2S_RX,
 	MSM_BACKEND_DAI_QUINARY_MI2S_TX, 1, 0, msm_routing_get_port_mixer,
 	msm_routing_put_port_mixer),
+	SOC_DOUBLE_EXT("INTERNAL_FM_TX", SND_SOC_NOPM,
+	MSM_BACKEND_DAI_QUINARY_MI2S_RX,
+	MSM_BACKEND_DAI_INT_FM_TX, 1, 0, msm_routing_get_port_mixer,
+	msm_routing_put_port_mixer),
 };
 
 static const struct snd_kcontrol_new pri_tdm_rx_0_port_mixer_controls[] = {
@@ -20381,6 +20385,7 @@ static const struct snd_soc_dapm_route intercon[] = {
 	{"QUIN_MI2S_RX Port Mixer", "SLIM_0_TX", "SLIM_0_TX"},
 	{"QUIN_MI2S_RX Port Mixer", "SEC_MI2S_TX", "SEC_MI2S_TX"},
 	{"QUIN_MI2S_RX Port Mixer", "QUIN_MI2S_TX", "QUIN_MI2S_TX"},
+	{"QUIN_MI2S_RX Port Mixer", "INTERNAL_FM_TX", "INT_FM_TX"},
 	{"QUIN_MI2S_RX", NULL, "QUIN_MI2S_RX Port Mixer"},
 
 	/* Backend Enablement */
