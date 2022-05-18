@@ -21,8 +21,7 @@
 #include <linux/vmalloc.h>
 #include <linux/zstd.h>
 
-
-uint compression_level = 1;
+uint compression_level = 2;
 module_param(compression_level, uint, 0644);
 
 struct zstd_ctx {
