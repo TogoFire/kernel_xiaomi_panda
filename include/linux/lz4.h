@@ -227,6 +227,36 @@ int LZ4_decompress_fast(const char *source, char *dest, int originalSize);
 int LZ4_decompress_safe(const char *source, char *dest, int compressedSize,
 	int maxDecompressedSize);
 
+#if IS_ENABLED(CONFIG_EROFS_FS)
+/**
+ * LZ4_decompress_safe_partial() - Decompress a block of size 'compressedSize'
+ *	at position 'source' into buffer 'dest'
+ * @source: source address of the compressed data
+ * @dest: output buffer address of the decompressed data which must be
+ *	already allocated
+ * @compressedSize: is the precise full size of the compressed block.
+ * @targetOutputSize: the decompression operation will try
+ *	to stop as soon as 'targetOutputSize' has been reached
+ * @maxDecompressedSize: is the size of destination buffer
+ *
+ * This function decompresses a compressed block of size 'compressedSize'
+ * at position 'source' into destination buffer 'dest'
+ * of size 'maxDecompressedSize'.
+ * The function tries to stop decompressing operation as soon as
+ * 'targetOutputSize' has been reached, reducing decompression time.
+ * This function never writes outside of output buffer,
+ * and never reads outside of input buffer.
+ * It is therefore protected against malicious data packets.
+ *
+ * Return: the number of bytes decoded in the destination buffer
+ *	(necessarily <= maxDecompressedSize)
+ *	or a negative result in case of error
+ *
+ */
+int LZ4_decompress_safe_partial(const char *source, char *dest,
+	int compressedSize, int targetOutputSize, int maxDecompressedSize);
+#endif
+
 /*-************************************************************************
  *	LZ4 HC Compression
  **************************************************************************/
