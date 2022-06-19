@@ -28,6 +28,7 @@
 
 	chosen {
 		bootargs = "quiet core_ctl_disable_cpumask=0-7 kpti=0 noirqdebug";
+		rng-seed = <0x12345678>;
 	};
 
 	vendor: vendor {
