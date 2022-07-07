@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <fcntl.h>
+#include <time.h>
 #include <sys/wait.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
@@ -70,6 +71,15 @@ static void seed_rng(void)
 			panic("ioctl(RNDADDTOENTCNT)");
 	}
 	close(fd);
+}
+
+static void set_time(void)
+{
+	if (time(NULL))
+		return;
+	pretty_message("[+] Setting fake time...");
+	if (stime(&(time_t){1433512680}) < 0)
+		panic("settimeofday()");
 }
 
 static void mount_filesystems(void)
@@ -261,6 +271,7 @@ int main(int argc, char *argv[])
 	print_banner();
 	mount_filesystems();
 	seed_rng();
+	set_time();
 	kmod_selftests();
 	enable_logging();
 	clear_leaks();
