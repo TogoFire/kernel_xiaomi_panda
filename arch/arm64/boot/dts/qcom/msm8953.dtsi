@@ -235,6 +235,7 @@
 	compatible = "simple-bus";
 
 	dcc: dcc@b3000 {
+		status = "disabled";
 		compatible = "qcom,dcc";
 		reg = <0xb3000 0x1000>,
 		      <0xb4000 0x800>;
