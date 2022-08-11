@@ -575,6 +575,33 @@ static void update_min_vruntime(struct cfs_rq *cfs_rq)
 #endif
 }
 
+#ifdef CONFIG_PERF_HUMANTASK
+static inline bool jump_queue(struct task_struct *tsk, struct rb_node *root)
+{
+	bool jump = false;
+
+	if (tsk && tsk->human_task && root) {
+		if (tsk->human_task > MAX_LEVER) {
+			jump = true;
+			goto out;
+		}
+
+		if (tsk->human_task < MAX_LEVER)
+			jump = true;
+
+		tsk->human_task = jump ? ++tsk->human_task : 1;
+	}
+
+out:
+	if (jump)
+		trace_sched_debug_einfo(tsk, "jumper", "boostx",
+					tsk->human_task, sched_boost(),
+					1, 1, 0);
+
+	return jump;
+}
+#endif
+
 /*
  * Enqueue an entity into the rb-tree:
  */
@@ -584,6 +611,19 @@ static void __enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
 	struct rb_node *parent = NULL;
 	struct sched_entity *entry;
 	int leftmost = 1;
+
+#ifdef CONFIG_PERF_HUMANTASK
+	bool speed = false;
+	struct task_struct *tsk = NULL;
+
+	if (entity_is_task(se)) {
+		tsk = task_of(se);
+		speed = jump_queue(tsk, *link);
+	}
+
+	if (speed)
+		se->vruntime = tsk->human_task * 1000000;
+#endif
 
 	/*
 	 * Find the right place in the rbtree:
@@ -609,6 +649,11 @@ static void __enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
 	 */
 	if (leftmost)
 		cfs_rq->rb_leftmost = &se->run_node;
+
+#ifdef CONFIG_PERF_HUMANTASK
+	if (speed)
+		se->vruntime = entry->vruntime - 1;
+#endif
 
 	rb_link_node(&se->run_node, parent, link);
 	rb_insert_color(&se->run_node, &cfs_rq->tasks_timeline);
@@ -7379,6 +7424,10 @@ retry:
 			if (walt_cpu_high_irqload(i) || is_reserved(i))
 				continue;
 
+#ifdef CONFIG_PERF_HUMANTASK
+			if (p->human_task > MAX_LEVER)
+				break;
+#endif
 			/*
 			 * p's blocked utilization is still accounted for on prev_cpu
 			 * so prev_cpu will receive a negative bias due to the double
@@ -7855,6 +7904,11 @@ static int select_energy_cpu_brute(struct task_struct *p, int prev_cpu, int sync
 
 	fbt_env.placement_boost = task_boost_policy(p);
 	fbt_env.avoid_prev_cpu = false;
+
+#ifdef CONFIG_PERF_HUMANTASK
+	if (p->human_task > MAX_LEVER)
+		goto done;
+#endif
 
 	if (prefer_idle || fbt_env.need_idle)
 		sync = 0;
@@ -8938,6 +8992,11 @@ redo:
 			env->flags |= LBF_NEED_BREAK;
 			break;
 		}
+
+#ifdef CONFIG_PERF_HUMANTASK
+		if (p->human_task > MAX_LEVER)
+			goto next;
+#endif
 
 		if (!can_migrate_task(p, env))
 			goto next;
