@@ -486,7 +486,7 @@ static void shared_hyp_mapping(int index)
 			dest_perms, 1);
 
 	if (ret != 0) {
-		pr_err("memshare: hyp_assign_phys failed size=%u err=%d\n",
+		pr_debug("memshare: hyp_assign_phys failed size=%u err=%d\n",
 				memblock[index].size, ret);
 		return;
 	}
