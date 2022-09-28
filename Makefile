@@ -922,6 +922,7 @@ KBUILD_CFLAGS += $(call cc-option, -Wno-tautological-constant-out-of-range-compa
 KBUILD_CFLAGS += $(call cc-option, -Wno-sometimes-uninitialized)
 KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-parameter)
 KBUILD_CFLAGS += $(call cc-disable-warning, -Wno-deprecated-declarations)
+KBUILD_CFLAGS += $(call cc-disable-warning, void-ptr-dereference)
 KBUILD_CFLAGS += -Wno-asm-operand-widths
 KBUILD_CFLAGS += -Wno-initializer-overrides
 
