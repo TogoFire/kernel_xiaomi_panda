@@ -1301,7 +1301,7 @@ static ssize_t urandom_read_iter(struct kiocb *kiocb, struct iov_iter *iter)
 	return get_random_bytes_user(iter);
 }
 
-static ssize_t random_read_iter(struct kiocb *kiocb, struct iov_iter *iter)
+static ssize_t __maybe_unused random_read_iter(struct kiocb *kiocb, struct iov_iter *iter)
 {
 	int ret;
 
