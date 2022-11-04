@@ -2386,7 +2386,7 @@ static void liquidio_napi_drv_callback(void *arg)
 	if (OCTEON_CN23XX_PF(oct) || droq->cpu_id == this_cpu) {
 		napi_schedule_irqoff(&droq->napi);
 	} else {
-		call_single_data_t *csd = &droq->csd;
+		struct call_single_data *csd = &droq->csd;
 
 		csd->func = napi_schedule_wrapper;
 		csd->info = &droq->napi;
