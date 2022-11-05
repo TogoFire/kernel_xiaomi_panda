@@ -24,7 +24,6 @@
 #define HIST                    5
 #define TARGET                  80
 #define CAP                     75
-#define WAIT_THRESHOLD          10
 /* AB vote is in multiple of BW_STEP Mega bytes */
 #define BW_STEP                 160
 
@@ -53,8 +52,7 @@ static inline int devfreq_get_freq_level(struct devfreq *devfreq,
 }
 
 static int devfreq_gpubw_get_target(struct devfreq *df,
-				unsigned long *freq,
-				u32 *flag)
+				unsigned long *freq)
 {
 
 	struct devfreq_msm_adreno_tz_data *priv = df->data;
@@ -67,9 +65,7 @@ static int devfreq_gpubw_get_target(struct devfreq *df,
 	int result;
 	int level = 0;
 	int act_level;
-	int norm_max_cycles;
 	int norm_cycles;
-	int wait_active_percent;
 	int gpu_percent;
 	/*
 	 * Normalized AB should at max usage be the gpu_bimc frequency in MHz.
@@ -98,12 +94,8 @@ static int devfreq_gpubw_get_target(struct devfreq *df,
 	if (priv->bus.total_time < LONG_FLOOR)
 		return result;
 
-	norm_max_cycles = (unsigned int)(priv->bus.ram_time) /
-			(unsigned int) priv->bus.total_time;
 	norm_cycles = (unsigned int)(priv->bus.ram_time + priv->bus.ram_wait) /
 			(unsigned int) priv->bus.total_time;
-	wait_active_percent = (100 * (unsigned int)priv->bus.ram_wait) /
-			(unsigned int) priv->bus.ram_time;
 	gpu_percent = (100 * (unsigned int)priv->bus.gpu_time) /
 			(unsigned int) priv->bus.total_time;
 
@@ -112,8 +104,8 @@ static int devfreq_gpubw_get_target(struct devfreq *df,
 	 * FAST hint.  Otherwise check the current value against the current
 	 * cutoffs.
 	 */
-	if (norm_max_cycles > priv->bus.max) {
-		_update_cutoff(priv, norm_max_cycles);
+	if (norm_cycles > priv->bus.max) {
+		_update_cutoff(priv, norm_cycles);
 		bus_profile->flag = DEVFREQ_FLAG_FAST_HINT;
 	} else {
 		/* GPU votes for IB not AB so don't under vote the system */
@@ -122,8 +114,7 @@ static int devfreq_gpubw_get_target(struct devfreq *df,
 		act_level = (act_level < 0) ? 0 : act_level;
 		act_level = (act_level >= priv->bus.num) ?
 		(priv->bus.num - 1) : act_level;
-		if ((norm_cycles > priv->bus.up[act_level] ||
-				wait_active_percent > WAIT_THRESHOLD) &&
+		if (norm_cycles > priv->bus.up[act_level] &&
 				gpu_percent > CAP)
 			bus_profile->flag = DEVFREQ_FLAG_FAST_HINT;
 		else if (norm_cycles < priv->bus.down[act_level] && level)
