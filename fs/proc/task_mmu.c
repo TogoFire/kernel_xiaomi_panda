@@ -1647,8 +1647,8 @@ cont:
 		if (!page)
 			continue;
 
-			if (page_mapcount(page) != 1)
-				continue;
+		if (page_mapcount(page) != 1)
+			continue;
 		if (isolate_lru_page(page))
 			continue;
 
