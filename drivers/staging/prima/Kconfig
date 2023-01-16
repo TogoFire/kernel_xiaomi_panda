@@ -1,0 +1,37 @@
+comment "Qualcomm Atheros Prima WLAN module"
+
+if CFG80211 && WCNSS_CORE_PRONTO
+
+config PRIMA_WLAN
+	tristate "Qualcomm Atheros Prima WLAN module"
+	default n
+	help
+	  Add support for the Qualcomm Atheros Prima WLAN module
+
+config PRONTO_WLAN
+	tristate "Qualcomm Atheros Pronto WLAN module"
+	default n
+	help
+	  Add support for the Qualcomm Atheros Pronto WLAN module
+
+config QCOM_TDLS
+	bool "Enable TDLS feature"
+	default n
+
+config WLAN_FEATURE_SAE
+	bool "Enable SAE feature"
+	default n
+
+config WLAN_FEATURE_SW_PTA
+	bool "Enable SW PTA feature"
+	default n
+
+config WLAN_AKM_SUITE_OWE
+	bool "Enable OWE feature"
+	default n
+
+config PRIMA_WLAN_LFR_MBB
+	bool "Enable Legacy Fast Roaming (LFR) Make Before Break feature"
+	default n
+
+endif # CFG80211 && WCNSS_CORE_PRONTO
