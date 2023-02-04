@@ -2082,6 +2082,8 @@ struct task_struct *fork_idle(int cpu)
 	return task;
 }
 
+extern int kp_active_mode(void);
+
 /*
  *  Ok, this is the main fork-routine.
  *
@@ -2098,13 +2100,24 @@ long _do_fork(unsigned long clone_flags,
 	struct task_struct *p;
 	int trace = 0;
 	long nr;
+	unsigned int period = 30;
+
+	switch (kp_active_mode()) {
+	case 0: /* Use balance mode's boost period */
+	case 2:
+		/* Boost for 50 ms when balance mode is active */
+		period = 50;
+		break;
+	case 3:
+		/* Boost for 100 ms when performance mode is active */
+		period = 100;
+		break;
+	}
 
 #ifdef CONFIG_CPU_INPUT_BOOST
-	/* Boost CPU to the max for 50 ms when userspace launches an app */
-	if (task_is_zygote(current) && cpu_input_boost_within_input(75)) {
-		cpu_input_boost_kick_max(100);
-		devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 100);
-	}
+	/* Boost CPU to the max when userspace launches an app */
+	if (task_is_zygote(current))
+		devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, period);
 #endif
 
 	/*
