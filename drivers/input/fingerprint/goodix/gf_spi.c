@@ -488,7 +488,7 @@ static const struct file_operations gf_fops = {
 static int __always_inline goodix_fb_state_chg_callback(struct notifier_block *nb,
 							unsigned long val, void *data)
 {
-	struct gf_dev *gf_dev;
+	struct gf_dev *gf_dev = container_of(nb, struct gf_dev, notifier);
 	struct fb_event *evdata = data;
 	unsigned int blank;
 	char msg = 0;
@@ -498,7 +498,6 @@ static int __always_inline goodix_fb_state_chg_callback(struct notifier_block *n
 		return 0;
 	pr_debug("[info] %s go to the goodix_fb_state_chg_callback value = %d\n",
 			__func__, (int)val);
-	gf_dev = container_of(nb, struct gf_dev, notifier);
 	/* modified by zhongshengbin for fingerprint D1S-634 begin 2018-03-04 */
 	/* if (evdata && evdata->data && val == FB_EARLY_EVENT_BLANK && gf_dev) { */
 	if (evdata && evdata->data && val == FB_EVENT_BLANK && gf_dev) {
@@ -527,6 +526,7 @@ static int __always_inline goodix_fb_state_chg_callback(struct notifier_block *n
 			break;
 		}
 	}
+
 	printk("SXF Exit %s\n ", __func__); /* add  for D1S-634 by zhongshengbin */
 	return NOTIFY_OK;
 }
