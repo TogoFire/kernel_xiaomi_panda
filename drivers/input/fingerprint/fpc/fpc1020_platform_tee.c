@@ -548,7 +548,7 @@ static const struct attribute_group attribute_group = {
 	.attrs = attributes,
 };
 
-static inline irqreturn_t fpc1020_irq_handler(int irq, void *handle)
+static irqreturn_t __always_inline fpc1020_irq_handler(int irq, void *handle)
 {
 	struct fpc1020_data *fpc1020 = handle;
 
@@ -581,8 +581,8 @@ static inline int fpc1020_request_named_gpio(struct fpc1020_data *fpc1020,
 }
 
 /* modified by zhongshengbin for fingerprint D1S-634 begin 2018-03-04 */
-static int fpc_fb_notif_callback(struct notifier_block *nb, unsigned long val, 
-					void *data)
+static int __always_inline fpc_fb_notif_callback(struct notifier_block *nb, unsigned long val,
+						 void *data)
 {
 	struct fpc1020_data *fpc1020 =
 		container_of(nb, struct fpc1020_data, fb_notifier);
