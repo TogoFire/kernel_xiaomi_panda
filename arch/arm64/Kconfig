@@ -1416,5 +1416,3 @@ endif
 source "lib/Kconfig"
 
 source "nethunter/Kconfig"
-
-source "docker/Kconfig"
