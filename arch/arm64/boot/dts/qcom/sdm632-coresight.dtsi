@@ -20,6 +20,61 @@
 	/delete-node/ cti@61ba000;
 	/delete-node/ cti@61bb000;
 
+	funnel_apss0: funnel@61a1000 {
+		compatible = "arm,primecell";
+		arm,primecell-periphid = <0x0003b908>;
+
+		reg = <0x61a1000 0x1000>;
+		reg-names = "funnel-base";
+
+		coresight-name = "coresight-funnel-apss0";
+
+		clocks = <&clock_gcc clk_qdss_clk>,
+			 <&clock_gcc clk_qdss_a_clk>;
+		clock-names = "apb_pclk";
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@1 {
+				reg = <4>;
+				funnel_apss0_in_etm4: endpoint {
+					slave-mode;
+					remote-endpoint =
+						<&etm4_out_funnel_apss0>;
+				};
+			};
+
+			port@2 {
+				reg = <5>;
+				funnel_apss0_in_etm5: endpoint {
+					slave-mode;
+					remote-endpoint =
+						<&etm5_out_funnel_apss0>;
+				};
+			};
+
+			port@3 {
+				reg = <6>;
+				funnel_apss0_in_etm6: endpoint {
+					slave-mode;
+					remote-endpoint =
+						<&etm6_out_funnel_apss0>;
+				};
+			};
+
+			port@4 {
+				reg = <7>;
+				funnel_apss0_in_etm7: endpoint {
+					slave-mode;
+					remote-endpoint =
+						<&etm7_out_funnel_apss0>;
+				};
+			};
+		};
+	};
+
 	etm4: etm@61b3000 {
 		compatible = "arm,primecell";
 		arm,primecell-periphid = <0x000bb959>;
