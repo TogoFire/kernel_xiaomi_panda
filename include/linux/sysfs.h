@@ -54,7 +54,7 @@ do {							\
 	(attr)->key = &__key;				\
 } while (0)
 #else
-#define sysfs_attr_init(attr) do {} while (0)
+#define sysfs_attr_init(attr) ((void)0)
 #endif
 
 /**

@@ -471,8 +471,8 @@ do {								\
 
 #else /* CONFIG_LOCK_STAT */
 
-#define lock_contended(lockdep_map, ip) do {} while (0)
-#define lock_acquired(lockdep_map, ip) do {} while (0)
+#define lock_contended(lockdep_map, ip) ((void)0)
+#define lock_acquired(lockdep_map, ip) ((void)0)
 
 #define LOCK_CONTENDED(_lock, try, lock) \
 	lock(_lock)

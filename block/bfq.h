@@ -677,7 +677,7 @@ static struct blkcg_gq *bfqg_to_blkg(struct bfq_group *bfqg);
 	pr_crit("bfq%d%c " fmt "\n", (bfqq)->pid,		\
 		bfq_bfqq_sync((bfqq)) ? 'S' : 'A',	\
 		##args)
-#define bfq_log_bfqg(bfqd, bfqg, fmt, args...)		do {} while (0)
+#define bfq_log_bfqg(bfqd, bfqg, fmt, args...)		((void)0)
 
 #endif /* CONFIG_BFQ_GROUP_IOSCHED */
 
@@ -713,7 +713,7 @@ static struct blkcg_gq *bfqg_to_blkg(struct bfq_group *bfqg);
 	blk_add_trace_msg((bfqd)->queue, "bfq%d%c " fmt, (bfqq)->pid,	\
 			bfq_bfqq_sync((bfqq)) ? 'S' : 'A',		\
 				##args)
-#define bfq_log_bfqg(bfqd, bfqg, fmt, args...)		do {} while (0)
+#define bfq_log_bfqg(bfqd, bfqg, fmt, args...)		((void)0)
 
 #endif /* CONFIG_BFQ_GROUP_IOSCHED */
 

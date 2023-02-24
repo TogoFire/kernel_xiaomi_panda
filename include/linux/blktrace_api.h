@@ -87,14 +87,14 @@ extern struct attribute_group blk_trace_attr_group;
 
 #else /* !CONFIG_BLK_DEV_IO_TRACE */
 # define blk_trace_ioctl(bdev, cmd, arg)		(-ENOTTY)
-# define blk_trace_shutdown(q)				do { } while (0)
+# define blk_trace_shutdown(q)				((void)0)
 # define do_blk_trace_setup(q, name, dev, bdev, buts)	(-ENOTTY)
-# define blk_add_driver_data(q, rq, data, len)		do {} while (0)
+# define blk_add_driver_data(q, rq, data, len)		((void)0)
 # define blk_trace_setup(q, name, dev, bdev, arg)	(-ENOTTY)
 # define blk_trace_startstop(q, start)			(-ENOTTY)
 # define blk_trace_remove(q)				(-ENOTTY)
-# define blk_add_trace_msg(q, fmt, ...)			do { } while (0)
-# define blk_trace_remove_sysfs(dev)			do { } while (0)
+# define blk_add_trace_msg(q, fmt, ...)			((void)0)
+# define blk_trace_remove_sysfs(dev)			((void)0)
 # define blk_trace_note_message_enabled(q)		(false)
 static inline int blk_trace_init_sysfs(struct device *dev)
 {
