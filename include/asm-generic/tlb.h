@@ -232,7 +232,7 @@ static inline bool __tlb_remove_pte_page(struct mmu_gather *tlb, struct page *pa
  * This is a nop so far, because only x86 needs it.
  */
 #ifndef __tlb_remove_pmd_tlb_entry
-#define __tlb_remove_pmd_tlb_entry(tlb, pmdp, address) do {} while (0)
+#define __tlb_remove_pmd_tlb_entry(tlb, pmdp, address) ((void)0)
 #endif
 
 #define tlb_remove_pmd_tlb_entry(tlb, pmdp, address)		\
@@ -261,6 +261,6 @@ static inline bool __tlb_remove_pte_page(struct mmu_gather *tlb, struct page *pa
 		__pmd_free_tlb(tlb, pmdp, address);		\
 	} while (0)
 
-#define tlb_migrate_finish(mm) do {} while (0)
+#define tlb_migrate_finish(mm) ((void)0)
 
 #endif /* _ASM_GENERIC__TLB_H */
