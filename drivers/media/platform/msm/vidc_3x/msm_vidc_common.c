@@ -2002,7 +2002,7 @@ static int handle_multi_stream_buffers(struct msm_vidc_inst *inst,
 		if (handle && dev_addr == handle->device_addr) {
 			if (binfo->buffer_ownership == DRIVER) {
 				dprintk(VIDC_ERR,
-					"FW returned same buffer: %pa\n",
+					"FW returned same buffer: %llu\n",
 					&dev_addr);
 				break;
 			}
@@ -2015,7 +2015,7 @@ static int handle_multi_stream_buffers(struct msm_vidc_inst *inst,
 
 	if (!found) {
 		dprintk(VIDC_ERR,
-			"Failed to find output buffer in queued list: %pa\n",
+			"Failed to find output buffer in queued list: %llu\n",
 			&dev_addr);
 	}
 
