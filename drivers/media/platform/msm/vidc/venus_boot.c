@@ -193,7 +193,14 @@ static int pil_venus_auth_and_reset(void)
 	void __iomem *reg_base = venus_data->reg_base;
 	u32 ver;
 	bool iommu_present = is_iommu_present(venus_data->resources);
-	struct device *dev = venus_data->iommu_ctx_bank_dev;
+	struct device *dev;
+
+#ifdef CONFIG_DEBUG_FS
+    dev = venus_data->iommu_ctx_bank_dev;
+#endif
+
+	rc = arm_iommu_attach_device(dev, venus_data->mapping);
+	arm_iommu_detach_device(dev);
 
 	if (!fw_bias) {
 		dprintk(VIDC_ERR, "FW bias is not valid\n");

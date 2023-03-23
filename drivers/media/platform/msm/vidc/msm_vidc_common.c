@@ -23,6 +23,10 @@
 #include "msm_vidc_debug.h"
 #include "msm_vidc_clocks.h"
 
+#ifdef CONFIG_TRACEPOINTS
+#define CREATE_TRACE_POINTS
+#endif
+
 static struct kmem_cache *kmem_buf_pool;
 
 #define IS_ALREADY_IN_STATE(__p, __d) (\
@@ -3112,6 +3116,10 @@ static int msm_vidc_deinit_core(struct msm_vidc_inst *inst)
 
 	mutex_lock(&core->lock);
 
+
+	// Declare and initialize the variable
+	unsigned long msm_vidc_firmware_unload_delay = 15000;
+
 	if (!core->resources.never_unload_fw) {
 		cancel_delayed_work(&core->fw_unload_work);
 
@@ -3121,14 +3129,12 @@ static int msm_vidc_deinit_core(struct msm_vidc_inst *inst)
 		 * will have a burst of back to back video playback sessions
 		 * e.g. thumbnail generation.
 		 */
-		schedule_delayed_work(&core->fw_unload_work,
-			msecs_to_jiffies(core->state == VIDC_CORE_INIT_DONE ?
-			core->resources.msm_vidc_firmware_unload_delay : 0));
+		unsigned long delay = (core->state == VIDC_CORE_INVALID) ? 0 :
+						msm_vidc_firmware_unload_delay;
+		schedule_delayed_work(&core->fw_unload_work, msecs_to_jiffies(delay));
 
-		dprintk(VIDC_DBG, "firmware unload delayed by %u ms\n",
-			core->state == VIDC_CORE_INIT_DONE ?
-			core->resources.msm_vidc_firmware_unload_delay : 0);
-	}
+		pr_debug("Firmware unload delayed by %lu ms\n", delay);
+}
 
 core_already_uninited:
 	change_inst_state(inst, MSM_VIDC_CORE_UNINIT);

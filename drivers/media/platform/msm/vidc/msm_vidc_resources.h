@@ -181,8 +181,10 @@ struct msm_vidc_platform_resources {
 	bool debug_timeout;
 	uint32_t max_inst_count;
 	uint32_t max_secure_inst_count;
-	int msm_vidc_hw_rsp_timeout;
-	int msm_vidc_firmware_unload_delay;
+	static int msm_vidc_hw_rsp_timeout = 1000;
+#ifdef CONFIG_DEBUG_FS
+	static int msm_vidc_firmware_unload_delay = 15000;
+#endif
 	uint32_t msm_vidc_pwr_collapse_delay;
 	bool non_fatal_pagefaults;
 	bool cache_pagetables;
