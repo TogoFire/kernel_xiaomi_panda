@@ -66,6 +66,7 @@
 #include <linux/binfmts.h>
 #include <linux/cpu_input_boost.h>
 #include <linux/devfreq_boost.h>
+#include <../drivers/misc/kprofiles/kprofiles.h>
 #include <net/sock.h>
 
 #define CREATE_TRACE_POINTS
@@ -2951,7 +2952,6 @@ static int cgroup_procs_write_permission(struct task_struct *task,
  * function to attach either it or all tasks in its threadgroup. Will lock
  * cgroup_mutex and threadgroup.
  */
-extern int kp_active_mode(void);
 static ssize_t __cgroup_procs_write(struct kernfs_open_file *of, char *buf,
 				    size_t nbytes, loff_t off, bool threadgroup)
 {

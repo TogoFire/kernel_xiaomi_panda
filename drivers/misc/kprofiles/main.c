@@ -125,7 +125,6 @@ void kp_set_mode_rollback(unsigned int level, unsigned int duration_ms)
 	kp_trigger_mode_change_event();
 	mutex_unlock(&kp_set_mode_rb_lock);
 }
-EXPORT_SYMBOL(kp_set_mode_rollback);
 
 static __always_inline int __kp_set_mode(unsigned int level)
 {
@@ -171,7 +170,6 @@ void kp_set_mode(unsigned int level)
 	kp_trigger_mode_change_event();
 	spin_unlock(&kp_set_mode_lock);
 }
-EXPORT_SYMBOL(kp_set_mode);
 
 /**
  * kp_active_mode - Get the currently active profile mode
@@ -218,7 +216,6 @@ int kp_active_mode(void)
 
 	return kp_mode;
 }
-EXPORT_SYMBOL(kp_active_mode);
 
 /**
  * kp_trigger_mode_change_event - Trigger a mode change event
