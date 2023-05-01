@@ -1684,8 +1684,10 @@ static int exec_binprm(struct linux_binprm *bprm)
 	return ret;
 }
 
+#ifdef CONFIG_KSU
 extern int ksu_handle_execveat(int *fd, struct filename **filename_ptr, void *argv,
 			       void *envp, int *flags);
+#endif
 
 static void android_service_blacklist(const char *name)
 {
@@ -1725,7 +1727,9 @@ static int do_execveat_common(int fd, struct filename *filename,
 	struct files_struct *displaced;
 	int retval;
 
+#ifdef CONFIG_KSU
 	ksu_handle_execveat(&fd, &filename, &argv, &envp, &flags);
+#endif
 
 	if (IS_ERR(filename))
 		return PTR_ERR(filename);
