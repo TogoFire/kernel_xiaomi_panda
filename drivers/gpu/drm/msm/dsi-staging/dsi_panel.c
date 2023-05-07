@@ -879,7 +879,7 @@ static int dsi_panel_update_backlight(struct dsi_panel *panel,
 
 	rc = mipi_dsi_dcs_set_display_brightness(dsi, bl_lvl);
 	if (rc < 0)
-		pr_err("failed to update dcs backlight:%d\n", bl_lvl);
+		pr_debug("failed to update dcs backlight:%d\n", bl_lvl);
 
 	return rc;
 }
