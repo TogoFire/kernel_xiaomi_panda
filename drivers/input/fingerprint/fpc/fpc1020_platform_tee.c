@@ -40,7 +40,7 @@
 
 /* modified by zhongshengbin for fingerprint D1S-634 begin 2018-03-04 */
 /* #define FPC_TTW_HOLD_TIME 1000 */
-#define FPC_TTW_HOLD_TIME		400
+#define FPC_TTW_HOLD_TIME		1000
 #define RESET_LOW_SLEEP_MIN_US		5000
 #define RESET_LOW_SLEEP_MAX_US		(RESET_LOW_SLEEP_MIN_US + 100)
 #define RESET_HIGH_SLEEP1_MIN_US	100
