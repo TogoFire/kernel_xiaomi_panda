@@ -50,6 +50,7 @@
                 compatible = "qcom,eeprom";
                 qcom,slave-addr = <0xa8>;
                 qcom,cci-master = <0>;
+                qcom,i2c-freq-mode = <0x1>;
                 reg = <0x0>;
                 qcom,num-blocks = <1>;
                 qcom,page0 = <0 0x0 2 0x01 1 1>;
@@ -100,6 +101,7 @@
                 compatible = "qcom,eeprom";
                 qcom,slave-addr = <0xA8>;
                 qcom,cci-master = <0>;
+                qcom,i2c-freq-mode = <0x1>;
                 reg = <0x01>;
                 qcom,num-blocks = <1>;
                 qcom,page0 = <0 0x0 2 0x01 1 1>;
@@ -153,6 +155,7 @@
                 qcom,eeprom-name = "sakura_s5k5e8_ofilm";
                 qcom,slave-addr = <0x5A>;
                 qcom,num-blocks = <27>;
+                qcom,i2c-freq-mode = <0x1>;
 
 		//init 4
 		qcom,page0 = <1 0x0A00 2 0x4 1 1>;
@@ -305,6 +308,7 @@
                 qcom,eeprom-name = "sakura_s5k5e8_sunny";
                 qcom,slave-addr = <0x5A>;
                 qcom,num-blocks = <27>;
+                qcom,i2c-freq-mode = <0x1>;
 
 		//init 4
 		qcom,page0 = <1 0x0A00 2 0x4 1 1>;
@@ -456,6 +460,7 @@
 
                 qcom,eeprom-name = "sakura_ov5675_ofilm";
                 qcom,slave-addr = <0x6c>;
+                qcom,i2c-freq-mode = <0x1>;
 
                 qcom,num-blocks = <10>;
                 qcom,page0 = <1 0x0100 2 0x01 1 1>;
@@ -546,6 +551,7 @@
 
                 qcom,eeprom-name = "sakura_ov5675_qtech";
                 qcom,slave-addr = <0x20>;
+                qcom,i2c-freq-mode = <0x1>;
 
                 qcom,num-blocks = <10>;
                 qcom,page0 = <1 0x0100 2 0x01 1 1>;
