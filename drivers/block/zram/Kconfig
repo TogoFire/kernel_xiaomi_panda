@@ -25,7 +25,7 @@ config ZRAM_WRITEBACK
 	 /sys/block/zramX/backing_dev.
 
 	 With /sys/block/zramX/{idle,writeback}, application could ask
-	 idle page's writeback to the backing device to save in memory.
+	 idle pages writeback to the backing device to save in memory.
 
 	 See Documentation/blockdev/zram.txt for more information.
 
