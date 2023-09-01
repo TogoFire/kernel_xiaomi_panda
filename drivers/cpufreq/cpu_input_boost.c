@@ -39,6 +39,9 @@ module_param_named(remove_input_boost_freq, boost_min_freq, uint, 0644);
 module_param(input_boost_duration, short, 0644);
 module_param(wake_boost_duration, short, 0644);
 
+/* Kprofiles */
+extern int kp_active_mode(void);
+
 /* Available bits for boost state */
 enum {
 	SCREEN_OFF,
@@ -117,7 +120,7 @@ bool cpu_input_boost_within_input(unsigned long timeout_ms)
 
 static void __cpu_input_boost_kick(struct boost_drv *b)
 {
-	if (test_bit(SCREEN_OFF, &b->state))
+	if (test_bit(SCREEN_OFF, &b->state) || kp_active_mode() == 1)
 		return;
 
 	if (!input_boost_duration)
@@ -250,7 +253,7 @@ static int cpu_notifier_cb(struct notifier_block *nb, unsigned long action,
 	}
 
 	/* Unboost when the screen is off */
-	if (test_bit(SCREEN_OFF, &b->state)) {
+	if (test_bit(SCREEN_OFF, &b->state) || kp_active_mode() == 1) {
 		policy->min = get_min_freq(policy);
 		return NOTIFY_OK;
 	}
