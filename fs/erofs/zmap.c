@@ -102,7 +102,7 @@ unmap_done:
 out_unlock:
 	clear_bit_unlock(EROFS_I_BL_Z_BIT, &vi->flags);
 	smp_mb__after_atomic();
-	wake_up_bit(EROFS_I_BL_Z_BIT, &vi->flags);
+	wake_up_bit(&vi->flags, EROFS_I_BL_Z_BIT);
 	return err;
 }
 
