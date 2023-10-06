@@ -6231,11 +6231,11 @@ static int smbchg_battery_get_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_MAX_PULSE_ALLOWED:
 		val->intval = chip->max_pulse_allowed;
 		break;
-	case POWER_SUPPLY_PROP_CHARGE_COUNTER:
+	/* case POWER_SUPPLY_PROP_CHARGE_COUNTER:
 		val->intval = get_prop_batt_charge_counter(chip);
-		break;
-	case POWER_SUPPLY_PROP_CYCLE_COUNT:
-		val->intval = get_prop_batt_cycle_count(chip);
+		break; */
+	/* case POWER_SUPPLY_PROP_CYCLE_COUNT:
+		val->intval = get_prop_batt_cycle_count(chip); */
 	case POWER_SUPPLY_PROP_DUMP_SRAM:
 		val->strval = chip->debug_dump;
 		break;
