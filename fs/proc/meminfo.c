@@ -40,8 +40,8 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
 
 	si_meminfo(&i);
 	si_swapinfo(&i);
-	committed = vm_memory_committed();
-	
+	committed = percpu_counter_read_positive(&vm_committed_as);
+
 	cached = global_node_page_state(NR_FILE_PAGES) -
 			total_swapcache_pages() - i.bufferram;
 	if (cached < 0)
