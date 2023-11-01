@@ -280,7 +280,7 @@ static const struct in6_addr __compat_in6addr_any = IN6ADDR_ANY_INIT;
 #endif
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 11, 0) && !defined(ISRHEL7)
-#define system_power_efficient_wq system_unbound_wq
+#define system_wq system_unbound_wq
 #endif
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 3, 0)

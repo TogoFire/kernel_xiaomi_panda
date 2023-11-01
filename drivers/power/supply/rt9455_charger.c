@@ -937,7 +937,7 @@ static int rt9455_irq_handler_check_irq1_register(struct rt9455_info *info,
 		 * Therefore, batt_presence_work is scheduled to check whether
 		 * the battery is still absent or not.
 		 */
-		queue_delayed_work(system_power_efficient_wq,
+		queue_delayed_work(system_wq,
 				   &info->batt_presence_work,
 				   RT9455_BATT_PRESENCE_DELAY * HZ);
 	}
@@ -984,7 +984,7 @@ static int rt9455_irq_handler_check_irq2_register(struct rt9455_info *info,
 		 * need to notify userspace when CHRVPI interrupt has occurred.
 		 * Userspace will be notified after PWR_RDY bit is read.
 		 */
-		queue_delayed_work(system_power_efficient_wq,
+		queue_delayed_work(system_wq,
 				   &info->pwr_rdy_work,
 				   RT9455_PWR_RDY_DELAY * HZ);
 	}
@@ -1037,7 +1037,7 @@ static int rt9455_irq_handler_check_irq2_register(struct rt9455_info *info,
 			 * is not triggered if the charger is not connected to
 			 * the power source.
 			 */
-			queue_delayed_work(system_power_efficient_wq,
+			queue_delayed_work(system_wq,
 					   &info->max_charging_time_work,
 					   RT9455_MAX_CHARGING_TIME * HZ);
 			alert_userspace = true;
@@ -1475,7 +1475,7 @@ static void rt9455_pwr_rdy_work_callback(struct work_struct *work)
 			dev_err(dev, "Failed to enable charging\n");
 			return;
 		}
-		queue_delayed_work(system_power_efficient_wq,
+		queue_delayed_work(system_wq,
 				   &info->max_charging_time_work,
 				   RT9455_MAX_CHARGING_TIME * HZ);
 		break;
@@ -1520,11 +1520,11 @@ static void rt9455_batt_presence_work_callback(struct work_struct *work)
 	 * Otherwise, max_charging_time is scheduled.
 	 */
 	if (irq1 & GET_MASK(F_BATAB)) {
-		queue_delayed_work(system_power_efficient_wq,
+		queue_delayed_work(system_wq,
 				   &info->batt_presence_work,
 				   RT9455_BATT_PRESENCE_DELAY * HZ);
 	} else {
-		queue_delayed_work(system_power_efficient_wq,
+		queue_delayed_work(system_wq,
 				   &info->max_charging_time_work,
 				   RT9455_MAX_CHARGING_TIME * HZ);
 

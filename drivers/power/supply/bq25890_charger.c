@@ -714,7 +714,7 @@ static int bq25890_usb_notifier(struct notifier_block *nb, unsigned long val,
 			container_of(nb, struct bq25890_device, usb_nb);
 
 	bq->usb_event = val;
-	queue_work(system_power_efficient_wq, &bq->usb_work);
+	queue_work(system_wq, &bq->usb_work);
 
 	return NOTIFY_OK;
 }

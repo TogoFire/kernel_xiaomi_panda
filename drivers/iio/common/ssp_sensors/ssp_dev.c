@@ -188,7 +188,7 @@ static void ssp_wdt_timer_func(unsigned long ptr)
 
 	if (data->timeout_cnt > SSP_LIMIT_TIMEOUT_CNT ||
 	    data->com_fail_cnt > SSP_LIMIT_RESET_CNT)
-		queue_work(system_power_efficient_wq, &data->work_wdt);
+		queue_work(system_wq, &data->work_wdt);
 _mod:
 	mod_timer(&data->wdt_timer, jiffies + msecs_to_jiffies(SSP_WDT_TIME));
 }

@@ -635,7 +635,7 @@ static int sm5022_muic_i2c_probe(struct i2c_client *i2c,
 	 * driver should notify cable state to upper layer.
 	 */
 	INIT_DELAYED_WORK(&info->wq_detcable, sm5502_muic_detect_cable_wq);
-	queue_delayed_work(system_power_efficient_wq, &info->wq_detcable,
+	queue_delayed_work(system_wq, &info->wq_detcable,
 			msecs_to_jiffies(DELAY_MS_DEFAULT));
 
 	/* Initialize SM5502 device and print vendor id and version id */

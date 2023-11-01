@@ -2061,7 +2061,7 @@ static int max98090_dai_trigger(struct snd_pcm_substream *substream, int cmd,
 	case SNDRV_PCM_TRIGGER_RESUME:
 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 		if (!max98090->master && dai->active == 1)
-			queue_delayed_work(system_power_efficient_wq,
+			queue_delayed_work(system_wq,
 					   &max98090->pll_det_enable_work,
 					   msecs_to_jiffies(10));
 		break;
@@ -2101,7 +2101,7 @@ static void max98090_pll_det_enable_work(struct work_struct *work)
 	regmap_read(max98090->regmap, M98090_REG_INTERRUPT_S, &mask);
 	status &= mask;
 	if (status & M98090_JDET_MASK)
-		queue_delayed_work(system_power_efficient_wq,
+		queue_delayed_work(system_wq,
 				   &max98090->jack_work,
 				   msecs_to_jiffies(100));
 
@@ -2288,7 +2288,7 @@ static irqreturn_t max98090_interrupt(int irq, void *data)
 
 		pm_wakeup_event(codec->dev, 100);
 
-		queue_delayed_work(system_power_efficient_wq,
+		queue_delayed_work(system_wq,
 				   &max98090->jack_work,
 				   msecs_to_jiffies(100));
 	}
@@ -2337,7 +2337,7 @@ int max98090_mic_detect(struct snd_soc_codec *codec,
 	snd_soc_jack_report(max98090->jack, 0,
 			    SND_JACK_HEADSET | SND_JACK_BTN_0);
 
-	queue_delayed_work(system_power_efficient_wq,
+	queue_delayed_work(system_wq,
 			   &max98090->jack_work,
 			   msecs_to_jiffies(100));
 

@@ -837,7 +837,7 @@ static int max77843_muic_probe(struct platform_device *pdev)
 
 	/* Detect accessory after completing the initialization of platform */
 	INIT_DELAYED_WORK(&info->wq_detcable, max77843_muic_detect_cable_wq);
-	queue_delayed_work(system_power_efficient_wq,
+	queue_delayed_work(system_wq,
 			&info->wq_detcable, msecs_to_jiffies(DELAY_MS_DEFAULT));
 
 	return 0;

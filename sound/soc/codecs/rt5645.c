@@ -736,7 +736,7 @@ static int rt5645_spk_put_volsw(struct snd_kcontrol *kcontrol,
 
 	ret = snd_soc_put_volsw(kcontrol, ucontrol);
 
-	mod_delayed_work(system_power_efficient_wq, &rt5645->rcclock_work,
+	mod_delayed_work(system_wq, &rt5645->rcclock_work,
 		msecs_to_jiffies(200));
 
 	return ret;
@@ -3050,7 +3050,7 @@ static int rt5645_set_bias_level(struct snd_soc_codec *codec,
 			snd_soc_write(codec, RT5645_DEPOP_M2, 0x1140);
 			msleep(40);
 			if (rt5645->en_button_func)
-				queue_delayed_work(system_power_efficient_wq,
+				queue_delayed_work(system_wq,
 					&rt5645->jack_detect_work,
 					msecs_to_jiffies(0));
 		}
@@ -3340,7 +3340,7 @@ static irqreturn_t rt5645_irq(int irq, void *data)
 {
 	struct rt5645_priv *rt5645 = data;
 
-	queue_delayed_work(system_power_efficient_wq,
+	queue_delayed_work(system_wq,
 			   &rt5645->jack_detect_work, msecs_to_jiffies(250));
 
 	return IRQ_HANDLED;
@@ -3350,7 +3350,7 @@ static void rt5645_btn_check_callback(unsigned long data)
 {
 	struct rt5645_priv *rt5645 = (struct rt5645_priv *)data;
 
-	queue_delayed_work(system_power_efficient_wq,
+	queue_delayed_work(system_wq,
 		   &rt5645->jack_detect_work, msecs_to_jiffies(5));
 }
 

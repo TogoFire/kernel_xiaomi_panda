@@ -1371,7 +1371,7 @@ static irqreturn_t rt5659_irq(int irq, void *data)
 {
 	struct rt5659_priv *rt5659 = data;
 
-	queue_delayed_work(system_power_efficient_wq,
+	queue_delayed_work(system_wq,
 			   &rt5659->jack_detect_work, msecs_to_jiffies(250));
 
 	return IRQ_HANDLED;

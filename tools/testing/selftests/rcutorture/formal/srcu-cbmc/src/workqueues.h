@@ -97,6 +97,6 @@ static inline bool queue_delayed_work(struct workqueue_struct *wq,
 #define DECLARE_DELAYED_WORK(n, f) \
 	struct delayed_work n = __DELAYED_WORK_INITIALIZER(n, f, 0)
 
-#define system_power_efficient_wq ((struct workqueue_struct *) NULL)
+#define system_wq ((struct workqueue_struct *) NULL)
 
 #endif

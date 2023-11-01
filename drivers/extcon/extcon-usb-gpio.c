@@ -105,7 +105,7 @@ static irqreturn_t usb_irq_handler(int irq, void *dev_id)
 {
 	struct usb_extcon_info *info = dev_id;
 
-	queue_delayed_work(system_power_efficient_wq, &info->wq_detcable,
+	queue_delayed_work(system_wq, &info->wq_detcable,
 			   info->debounce_jiffies);
 
 	return IRQ_HANDLED;
@@ -213,7 +213,7 @@ static int usb_extcon_probe(struct platform_device *pdev)
 
 	if (info->trig_gpiod)
 		/* Schedule with delay to reset ethernet bridge */
-		queue_delayed_work(system_power_efficient_wq,
+		queue_delayed_work(system_wq,
 			&info->wq_detcable, msecs_to_jiffies(1500));
 	else
 		/* Perform initial detection */
@@ -295,7 +295,7 @@ static int usb_extcon_resume(struct device *dev)
 	if (info->vbus_gpiod)
 		enable_irq(info->vbus_irq);
 
-	queue_delayed_work(system_power_efficient_wq,
+	queue_delayed_work(system_wq,
 			   &info->wq_detcable, 0);
 
 	return ret;
