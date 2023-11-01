@@ -326,8 +326,7 @@ static irqreturn_t twl6040_audio_handler(int irq, void *data)
 	struct snd_soc_codec *codec = data;
 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
 
-	queue_delayed_work(system_power_efficient_wq,
-			   &priv->hs_jack.work, msecs_to_jiffies(200));
+	schedule_delayed_work(&priv->hs_jack.work, msecs_to_jiffies(200));
 
 	return IRQ_HANDLED;
 }
