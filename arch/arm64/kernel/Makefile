@@ -62,6 +62,6 @@ endif
 
 obj-y					+= $(arm64-obj-y) vdso/ probes/
 obj-$(CONFIG_VDSO32)			+= vdso32/
-obj-m					+= $(arm64-obj-m)
+obj-y					+= $(arm64-obj-y)
 head-y					:= head.o
 extra-y					+= $(head-y) vmlinux.lds
